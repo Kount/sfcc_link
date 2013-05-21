@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://www.demandware.com/xml/impex/metadata/2006-10-31">
+
+    <type-extension type-id="Order">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="kount_GEOX">
+                <display-name xml:lang="x-default">Kount Order GEOX</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_NETW">
+                <display-name xml:lang="x-default">Kount Order NETW</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_REAS">
+                <display-name xml:lang="x-default">Kount Order REAS</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_SCOR">
+                <display-name xml:lang="x-default">Kount Order SCOR</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_Status">
+                <display-name xml:lang="x-default">Kount Order Status</display-name>
+                <type>enum-of-string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+                <value-definitions>
+                    <value-definition>
+                        <display xml:lang="x-default">Approved</display>
+                        <value>APPROVED</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Hold</display>
+                        <value>HOLD</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Declined</display>
+                        <value>DECLINED</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Change</display>
+                        <value>CHANGE</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Time Out</display>
+                        <value>TIME OUT</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Time Out Payment Authorization</display>
+                        <value>TIME OUT PAYMENT</value>
+                    </value-definition>
+                </value-definitions>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_TRAN">
+                <display-name xml:lang="x-default">Kount Order Transaction ID</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_VELO">
+                <display-name xml:lang="x-default">Kount Order VELO</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_VMAX">
+                <display-name xml:lang="x-default">Kount Order VMAX</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="custom">
+                <display-name xml:lang="x-default">custom</display-name>
+                <attribute attribute-id="kount_Status"/>
+                <attribute attribute-id="kount_TRAN"/>
+                <attribute attribute-id="kount_REAS"/>
+                <attribute attribute-id="kount_GEOX"/>
+                <attribute attribute-id="kount_NETW"/>
+                <attribute attribute-id="kount_SCOR"/>
+                <attribute attribute-id="kount_VELO"/>
+                <attribute attribute-id="kount_VMAX"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+
+    <type-extension type-id="SitePreferences">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="kount_AWCLink">
+                <display-name xml:lang="x-default">Kount AWC link</display-name>
+                <description xml:lang="x-default">Copy and put this link to Browser, that would be go to Kount Agent Web Console</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+                <default-value>https://awc.test.kount.net</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_DCUrl">
+                <display-name xml:lang="x-default">Kount DC Server Url</display-name>
+                <description xml:lang="x-default">Kount Data Collector Server Url</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+                <default-value>https://tst.kaptcha.com</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_ENS">
+                <display-name xml:lang="x-default">Enable Event Notification Service</display-name>
+                <description xml:lang="x-default">Enable/Disable ENS</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_EmailList">
+                <display-name xml:lang="x-default">Kount Email list</display-name>
+                <description xml:lang="x-default">Email list for ENS. E.g. noemail@mail.com, testemail@mail.com, ...</description>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <field-length>0</field-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_IPFilter">
+                <display-name xml:lang="x-default">Array of IP</display-name>
+                <description xml:lang="x-default">Allows to skip step for particular IP address(es). E.g. 192.168.0.1, 10.10.10.1, ...</description>
+                <type>text</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <field-length>0</field-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_IsEnabled">
+                <display-name xml:lang="x-default">Enable Kount</display-name>
+                <description xml:lang="x-default">Enable/Disable Kount</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_MerchantID">
+                <display-name xml:lang="x-default">Merchant ID</display-name>
+                <description xml:lang="x-default">Merchant Number</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+                <field-height>0</field-height>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_RISK_CHANGE_GEOX">
+                <display-name xml:lang="x-default">RISK_CHANGE_GEOX</display-name>
+                <description xml:lang="x-default">Enable/Disable notification mail</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_RISK_CHANGE_NETW">
+                <display-name xml:lang="x-default">RISK_CHANGE_NETW</display-name>
+                <description xml:lang="x-default">Enable/Disable notification mail</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_RISK_CHANGE_REAS">
+                <display-name xml:lang="x-default">RISK_CHANGE_REAS</display-name>
+                <description xml:lang="x-default">Enable/Disable notification mail</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_RISK_CHANGE_REPLY">
+                <display-name xml:lang="x-default">RISK_CHANGE_REPLY</display-name>
+                <description xml:lang="x-default">Enable/Disable notification mail</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_RISK_CHANGE_SCOR">
+                <display-name xml:lang="x-default">RISK_CHANGE_SCOR</display-name>
+                <description xml:lang="x-default">Enable/Disable notification mail</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_RISK_CHANGE_VELO">
+                <display-name xml:lang="x-default">RISK_CHANGE_VELO</display-name>
+                <description xml:lang="x-default">Enable/Disable notification mail</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_RISK_CHANGE_VMAX">
+                <display-name xml:lang="x-default">RISK_CHANGE_VMAX</display-name>
+                <description xml:lang="x-default">Enable/Disable notification mail</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_RISServerUrl">
+                <display-name xml:lang="x-default">Kount RIS Server URL</display-name>
+                <description xml:lang="x-default">Kount RIS Server URL</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+                <field-length>0</field-length>
+                <default-value>https://risk.test.kount.net</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_WebsiteId">
+                <display-name xml:lang="x-default">Website ID</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>1</min-length>
+                <field-length>8</field-length>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="Storefront Configs">
+                <display-name xml:lang="x-default">Storefront Configurations</display-name>
+                <attribute attribute-id="listPriceDefault"/>
+                <attribute attribute-id="disableResponsiveDesign"/>
+                <attribute attribute-id="GoogleVerificationTag"/>
+                <attribute attribute-id="buildNotificationEmailList"/>
+                <attribute attribute-id="slideshoweffect"/>
+            </attribute-group>
+            <attribute-group group-id="Kount">
+                <display-name xml:lang="x-default">Kount</display-name>
+                <attribute attribute-id="kount_IsEnabled"/>
+                <attribute attribute-id="kount_DCUrl"/>
+                <attribute attribute-id="kount_RISServerUrl"/>
+                <attribute attribute-id="kount_IPFilter"/>
+                <attribute attribute-id="kount_WebsiteId"/>
+                <attribute attribute-id="kount_MerchantID"/>
+                <attribute attribute-id="kount_AWCLink"/>
+                <attribute attribute-id="kount_ENS"/>
+                <attribute attribute-id="kount_EmailList"/>
+                <attribute attribute-id="kount_RISK_CHANGE_NETW"/>
+                <attribute attribute-id="kount_RISK_CHANGE_GEOX"/>
+                <attribute attribute-id="kount_RISK_CHANGE_VMAX"/>
+                <attribute attribute-id="kount_RISK_CHANGE_SCOR"/>
+                <attribute attribute-id="kount_RISK_CHANGE_VELO"/>
+                <attribute attribute-id="kount_RISK_CHANGE_REPLY"/>
+                <attribute attribute-id="kount_RISK_CHANGE_REAS"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+    
+</metadata>

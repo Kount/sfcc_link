@@ -1,0 +1,21 @@
+/**
+*	Check IP in IPList of Bussines Manager and if currentIP exist in list then iframe doesn't put in page.
+*
+*   @input CurrentIP : String
+*   @output status : Boolean
+*
+*/
+importPackage( dw.system );
+importScript("int_kount:kount/LibKount.ds");
+
+function execute( args : PipelineDictionary ) : Number {
+   var kount : Object = new KountObject(),
+   	   IP : String = args.CurrentIP;
+   if(!empty(IP)){
+	   args.status = kount.filterIP(IP);
+	   return PIPELET_NEXT;
+   } else {
+   	   Logger.error("KOUNT: IPFilter.ds");
+   	   return PIPELET_ERROR;
+   }
+}

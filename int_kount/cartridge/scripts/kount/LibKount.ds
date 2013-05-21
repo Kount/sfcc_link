@@ -1,0 +1,111 @@
+/**
+*	This file is intended to be the realized all function necessary to work with Kount.
+*	All helper/util functions are dedicated into KountUtils.ds file.
+*
+*	@author Aleksandr Puchka, Astound Commerce
+*	@version 1.0
+*/
+
+importPackage( dw.system );
+importPackage( dw.web );
+importPackage( dw.net);
+
+var KountObject = function (){
+	
+	return {
+		
+		_isKountEnabled : function(){
+			return Site.getCurrent().getCustomPreferenceValue('kount_IsEnabled') ? true : false;
+		},
+		
+		_getDCUrl : function(){
+			return Site.getCurrent().getCustomPreferenceValue('kount_DCUrl') || "";
+		},
+		
+		_getRISUrl : function(){
+			return Site.getCurrent().getCustomPreferenceValue('kount_RISServerUrl') || "";
+		},
+		
+		_getIPList : function(){
+			return Site.getCurrent().getCustomPreferenceValue('kount_IPFilter') || "";
+		},
+		
+		_getWebsiteID : function(){
+			return Site.getCurrent().getCustomPreferenceValue('kount_WebsiteId') || "";
+		},
+		
+		_getMercahntID : function(){
+			return Site.getCurrent().getCustomPreferenceValue('kount_MerchantID') || "";
+		},
+		
+		_isENSEnabled : function(){
+			return Site.getCurrent().getCustomPreferenceValue('kount_ENS') ? true : false;
+		},
+		
+		_getEmailList : function(){
+			return Site.getCurrent().getCustomPreferenceValue('kount_EmailList') || "";
+		},
+		
+		filterIP : function(IP: String){
+		   var listIP : String = this._getIPList(),
+		   	   status : Boolean = false;
+    	  
+    	   if(listIP.indexOf(IP) != -1 ){
+    	   	   status = true;
+    	   }
+		   return status;
+		},
+		
+		PostRISRequest : function(RequiredInquiryKeysVal : Object){
+			var httpClient : HTTPClient = new HTTPClient(),
+				body : Array = [],
+				risUrl : String = this._getRISUrl(),
+				status = false;
+			
+			for (var key in RequiredInquiryKeysVal){
+				try {
+					var param = !empty(RequiredInquiryKeysVal[key]) ? RequiredInquiryKeysVal[key] : '';
+					if(typeof param === 'object'){
+						for(var i=0; i<param.length; i++){
+							body.push(new HTTPRequestPart(key+"["+i+"]", param[i]));	
+						}	
+					} else {
+						body.push(new HTTPRequestPart(key, param));
+					}
+				} catch (err){
+ 		    		throw err;
+ 		    	}
+			}
+			   		    
+ 		    try {
+ 		    	httpClient.setTimeout(5000);
+	 		    httpClient.open("POST", risUrl);
+				httpClient.sendMultiPart(body);
+				if (httpClient.statusCode == 200){
+					status = httpClient.text;
+					return status;
+				} else {
+					return status;
+				}
+ 		    } catch (err){
+ 		    	throw err;
+ 		    }
+		},
+		
+		evaluateRISResponse : function(response : String){
+			var status : String = "APPROVED",
+				params : Object = JSON.parse(response);
+			try {
+				if('ERRO' in params){
+					return status;
+				} else {
+					var responseCode : String = params['AUTO'],
+						statusMap : Object = { A : 'APPROVED', D : 'DECLINED', R : 'HOLD', E : 'HOLD' };
+					return statusMap[responseCode];
+				}
+			} catch (err){
+ 		    	throw err;
+ 		    }
+		}
+	}
+}

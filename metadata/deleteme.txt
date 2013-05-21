@@ -1,3 +1,0 @@
-This file is can be deleted once a real file is added to this directory.  This file is only used so that empty directories are tracked in Bitbucket.  Use the following commands to delete it:
-
-git rm deleteme.txt

@@ -1,0 +1,33 @@
+/**
+*	Script returns node name that will be called depending on event name
+*
+*   @input Parameters : dw.web.HttpParameterMap 
+*   @output NodeName : String
+*	@output EventData : Object
+*
+*/
+importPackage( dw.system );
+importPackage( dw.net );
+importScript("int_kount:kount/KountUtils.ds");
+
+function execute( args : PipelineDictionary ) : Number {
+	var xmlBody : String = args.Parameters.getRequestBodyAsString();
+    var kountUtils = new KountUtilsObject(),
+		eventTypeMap : Object = { 
+			SPECIAL_ALERT_TRANSACTION : 'K_ENS-SpecialAlertTransaction',
+			WORKFLOW_STATUS_EDIT : 'K_ENS-WorkflowStatusEdit',
+			WORKFLOW_REEVALUATE : 'K_ENS-WorkflowReevaluate',
+			RISK_CHANGE_SCOR : 'K_ENS-RiskChangeScor',
+			RISK_CHANGE_REPLY : 'K_ENS-RiskChangeReply',
+			RISK_CHANGE_VELO : 'K_ENS-RiskChangeVelo',
+			RISK_CHANGE_VMAX : 'K_ENS-RiskChangeVmax',
+			RISK_CHANGE_GEOX : 'K_ENS-RiskChangeGeox',
+			RISK_CHANGE_NETW : 'K_ENS-RiskChangeNetw',
+			RISK_CHANGE_REAS : 'K_ENS-RiskChangeReas'
+		},
+		xmlObj : Object = kountUtils.parseEnsXMLtoObject(xmlBody, eventTypeMap);
+	
+	args.NodeName = eventTypeMap[xmlObj['name']];
+    args.EventData = xmlObj;
+    return PIPELET_NEXT;
+}

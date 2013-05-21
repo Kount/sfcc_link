@@ -1,0 +1,39 @@
+/**
+*	This script update custom attribute in Order for Kount
+*
+*	@input eventData : Object
+*	@input attrName : String
+*	@output mailTo : String
+*	@output orderStatus : String
+*
+*/
+importPackage( dw.system );
+importPackage( dw.order );
+importScript("int_kount:kount/LibKount.ds");
+
+function execute( args : PipelineDictionary ) : Number {
+	var eventData : Object = args.eventData,
+		order : Order = OrderMgr.getOrder(eventData['orderNo']),
+		kount = new KountObject();
+	if (!order) {
+		return PIPELET_ERROR;
+	}
+	
+	var attrName : String = !empty(args.attrName) ? args.attrName : eventData['attributeName'],
+		attrValue : String = eventData['newValue'];
+	
+	if(attrName == "Status"){
+		var statusMap : Object = { A : 'APPROVED', D : 'DECLINED', R : 'HOLD', E : 'HOLD', C : 'CHANGE', X : 'TIME OUT', Y : 'TIME OUT PAYMENT' },
+		attrValue = statusMap[eventData['newValue']];
+		args.orderStatus = 'K_ENS-Status'+attrValue;
+	}
+		 
+	order.custom["kount_"+attrName] = attrValue;
+	if (order.custom["kount_"+attrName] != attrValue) {
+		Logger.error("KOUNT: UpdateCustomAttribute.ds: kount_"+attrName+" custom field wasn't save");
+		return PIPELET_ERROR;
+	}
+	
+	args.mailTo = kount._getEmailList();
+    return PIPELET_NEXT;
+} 

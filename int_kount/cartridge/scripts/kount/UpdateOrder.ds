@@ -1,0 +1,48 @@
+/**
+*	This script update kount_Status and data elements that are a part of the RIS response, custom Order attributes
+*
+*	@input orderId : String
+*	@input newStatus : String
+*	@input responseRIS : String
+*
+*/
+importPackage( dw.order );
+importPackage( dw.system );
+
+function execute( args : PipelineDictionary ) : Number {
+	var orderID : String = args.orderId,
+		order : Order = OrderMgr.getOrder(orderID);
+	if (!order) {
+		return PIPELET_ERROR;
+	}
+	
+	order.custom["kount_Status"] = args.newStatus;
+	if (order.custom["kount_Status"] != args.newStatus) {
+		Logger.error("KOUNT: UpdateOrder.ds: kount_Status custom field wasn't save");
+		return PIPELET_ERROR;
+	}
+	
+	var response : String = args.responseRIS;
+	if(!empty(response)){
+		var params : Object = JSON.parse(response);
+		try {
+			if(!params.hasOwnProperty('ERRO')){
+				var elementList : Array = ['GEOX', 'NETW', 'REAS', 'SCOR', 'VELO', 'VMAX', 'TRAN'];
+				for(var i = 0; i < elementList.length; i++){
+					var elem : String = elementList[i];
+					if(elem in params){
+						order.custom['kount_'+elem] = params[elem];
+						if (order.custom['kount_'+elem] != params[elem]) {
+							Logger.error("KOUNT: UpdateOrder.ds: kount_"+elem+" custom field wasn't save");
+							return PIPELET_ERROR;
+						}
+					}
+				}
+			}
+		} catch (err){
+			throw err;
+		}
+	}
+	
+	return PIPELET_NEXT;
+}

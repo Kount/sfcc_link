@@ -1,0 +1,17 @@
+<!--- TEMPLATENAME: iframe.isml --->
+<isscript>
+	importScript("int_kount:kount/LibKount.ds");
+	
+	var kount : Object = new KountObject();
+	
+	var sessionId : String = pdict.CurrentSession.sessionID.substr(0,24).replace('-','_') + pdict.Basket.getUUID().substr(0,8).replace('-','_');
+	var merchantId : String = kount._getMercahntID();
+	var DC_url : String = kount._getDCUrl();
+</isscript>
+<link rel="stylesheet" type="text/css" href="${URLUtils.staticURL('/css/k.css')}" />  
+
+<div <isif condition="${DC_url.indexOf('tst') != -1}">class="iframe_test"</isif> >
+<iframe width=1 height=1 frameborder=0 scrolling=no src="${dw.web.URLUtils.https('K-Image', 'm', merchantId, 's', sessionId)}">
+	<img width=1 height=1 src="${dw.web.URLUtils.https('K-Image', 'm', merchantId, 's', sessionId)}">
+</iframe>
+</div>

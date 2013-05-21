@@ -1,0 +1,11 @@
+<!--- TEMPLATENAME: logo.isml --->
+<isscript>
+	importScript("int_kount:kount/LibKount.ds");
+	
+	var kount : Object = new KountObject();
+	var merchantId : String = kount._getMercahntID();
+	var sessionId : String = pdict.CurrentHttpParameterMap.s.stringValue;
+	
+	var url : String = kount._getDCUrl()+'/logo.htm?m='+merchantId+'&s='+sessionId;
+</isscript>
+<isredirect location="${url}" permanent="false">
