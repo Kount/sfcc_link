@@ -1,0 +1,30 @@
+/**
+*    Check Inventory for Product, in case if doesn't exist then order will Fail otherwise PlaceOrder.
+*
+*    @input order : Order
+*
+*/
+importPackage( dw.system );
+importPackage( dw.catalog );
+importPackage( dw.order );
+importPackage( dw.util );
+
+
+function execute( args : PipelineDictionary ) : Number {
+	
+	var order : Order = args.order,
+		inventoryList : ProductInventoryList = ProductInventoryMgr.getInventoryList(),
+		productItems : Collection = order.getAllProductLineItems(),
+		iter : Iterator = productItems.iterator();
+	
+	while(!empty(iter) && iter.hasNext()){
+		var product : Product = iter.next();
+		var inventory : ProductInventoryRecord = inventoryList.getRecord(product.productID);
+		if(empty(inventory)){
+			Logger.error("KOUNT: CheckProductInventory.ds: inventory haven't found");
+			return PIPELET_ERROR;
+		}
+	}
+		
+    return PIPELET_NEXT;
+}
