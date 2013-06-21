@@ -2,11 +2,31 @@
 <?demandware-pipeline version="2.0"?>
 
 <pipeline type="view">
+  <branch basename="_ANONYMOUS_BRANCH_1">
+    <segment>
+      <node>
+        <text-node>
+          <description>Send POST RIS request to Kount with parameters</description>
+        </text-node>
+        <node-display x="0" y="1"/>
+      </node>
+    </segment>
+  </branch>
+  <branch basename="_ANONYMOUS_BRANCH_2">
+    <segment>
+      <node>
+        <text-node>
+          <description>Checks if IP wasn't found in list, insert DataCollector iframe on the page near payment methods</description>
+        </text-node>
+        <node-display x="2" y="1"/>
+      </node>
+    </segment>
+  </branch>
   <branch basename="PostRIS">
     <segment>
       <node>
         <start-node call-mode="private" name="PostRIS" secure="false"/>
-        <node-display x="0" y="1"/>
+        <node-display x="0" y="2"/>
       </node>
       <simple-transition/>
       <node>
@@ -132,7 +152,7 @@
     <segment>
       <node>
         <start-node name="DataCollector" secure="false"/>
-        <node-display x="2" y="1"/>
+        <node-display x="2" y="2"/>
       </node>
       <simple-transition/>
       <node>
@@ -226,11 +246,41 @@
       </node>
     </segment>
   </branch>
+  <branch basename="_ANONYMOUS_BRANCH_5">
+    <segment>
+      <node>
+        <text-node>
+          <description>Insert image for DataCollector iframe</description>
+        </text-node>
+        <node-display x="4" y="1"/>
+      </node>
+    </segment>
+  </branch>
+  <branch basename="_ANONYMOUS_BRANCH_6">
+    <segment>
+      <node>
+        <text-node>
+          <description>Update order with appropriate KountOrder Status and other parameters from Kount, after RIS request</description>
+        </text-node>
+        <node-display x="5" y="1"/>
+      </node>
+    </segment>
+  </branch>
+  <branch basename="_ANONYMOUS_BRANCH_7">
+    <segment>
+      <node>
+        <text-node>
+          <description>Check if kount is enabled in site preferences</description>
+        </text-node>
+        <node-display x="7" y="1"/>
+      </node>
+    </segment>
+  </branch>
   <branch basename="Image">
     <segment>
       <node>
         <start-node call-mode="public" name="Image" secure="false"/>
-        <node-display x="4" y="1"/>
+        <node-display x="4" y="2"/>
       </node>
       <simple-transition>
         <transition-display>
@@ -249,7 +299,7 @@
     <segment>
       <node>
         <start-node call-mode="private" name="UpdateOrder" secure="false"/>
-        <node-display x="5" y="1"/>
+        <node-display x="5" y="2"/>
       </node>
       <simple-transition/>
       <node>
@@ -311,7 +361,7 @@
     <segment>
       <node>
         <start-node call-mode="private" name="CheckKountIsEnabled" secure="false"/>
-        <node-display x="7" y="1"/>
+        <node-display x="7" y="2"/>
       </node>
       <simple-transition>
         <transition-display>
@@ -347,11 +397,21 @@
       </node>
     </segment>
   </branch>
+  <branch basename="_ANONYMOUS_BRANCH_11">
+    <segment>
+      <node>
+        <text-node>
+          <description>Check if Kount status equals &quot;approved&quot;</description>
+        </text-node>
+        <node-display x="5" y="7"/>
+      </node>
+    </segment>
+  </branch>
   <branch basename="CheckKountStatus">
     <segment>
       <node>
         <start-node call-mode="private" name="CheckKountStatus" secure="false"/>
-        <node-display x="5" y="7"/>
+        <node-display x="5" y="8"/>
       </node>
       <simple-transition>
         <transition-display>

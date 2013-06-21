@@ -2,11 +2,31 @@
 <?demandware-pipeline version="2.0"?>
 
 <pipeline type="view">
+  <branch basename="_ANONYMOUS_BRANCH_1">
+    <segment>
+      <node>
+        <text-node>
+          <description>Receives callback from Kount ENS and determine event with processing</description>
+        </text-node>
+        <node-display x="1" y="1"/>
+      </node>
+    </segment>
+  </branch>
+  <branch basename="_ANONYMOUS_BRANCH_2">
+    <segment>
+      <node>
+        <text-node>
+          <description>Processing event SpecialAlertTransaction</description>
+        </text-node>
+        <node-display x="3" y="1"/>
+      </node>
+    </segment>
+  </branch>
   <branch basename="EventClassifications">
     <segment>
       <node>
         <start-node call-mode="public" name="EventClassifications" secure="false"/>
-        <node-display x="1" y="1"/>
+        <node-display x="1" y="2"/>
       </node>
       <simple-transition/>
       <node>
@@ -79,7 +99,7 @@
     <segment>
       <node>
         <start-node call-mode="private" name="SpecialAlertTransaction" secure="false"/>
-        <node-display x="3" y="1"/>
+        <node-display x="3" y="2"/>
       </node>
       <simple-transition>
         <transition-display>
@@ -132,11 +152,31 @@
       </node>
     </segment>
   </branch>
+  <branch basename="_ANONYMOUS_BRANCH_5">
+    <segment>
+      <node>
+        <text-node>
+          <description>This pipeline changes custom order attribute and calls appropriate status node</description>
+        </text-node>
+        <node-display x="5" y="1"/>
+      </node>
+    </segment>
+  </branch>
+  <branch basename="_ANONYMOUS_BRANCH_6">
+    <segment>
+      <node>
+        <text-node>
+          <description>This pipeline changes custom order attribute</description>
+        </text-node>
+        <node-display x="7" y="1"/>
+      </node>
+    </segment>
+  </branch>
   <branch basename="WorkflowStatusEdit">
     <segment>
       <node>
         <start-node call-mode="private" name="WorkflowStatusEdit" secure="false"/>
-        <node-display x="5" y="1"/>
+        <node-display x="5" y="2"/>
       </node>
       <simple-transition/>
       <node>
@@ -206,7 +246,7 @@
     <segment>
       <node>
         <start-node call-mode="private" name="WorkflowReevaluate" secure="false"/>
-        <node-display x="7" y="1"/>
+        <node-display x="7" y="2"/>
       </node>
       <simple-transition/>
       <node>
@@ -244,11 +284,21 @@
       </node>
     </segment>
   </branch>
+  <branch basename="_ANONYMOUS_BRANCH_9">
+    <segment>
+      <node>
+        <text-node>
+          <description>RISK EVENTS and update appropriate field in order</description>
+        </text-node>
+        <node-display width="3" x="11" y="1"/>
+      </node>
+    </segment>
+  </branch>
   <branch basename="RiskChangeScor">
     <segment>
       <node>
         <start-node call-mode="private" name="RiskChangeScor" secure="false"/>
-        <node-display x="9" y="1"/>
+        <node-display x="9" y="2"/>
       </node>
       <transition target-connector="in1" target-path="./+1">
         <transition-display>
@@ -281,7 +331,7 @@
     <segment>
       <node>
         <start-node call-mode="private" name="RiskChangeReply" secure="false"/>
-        <node-display x="10" y="1"/>
+        <node-display x="10" y="2"/>
       </node>
       <transition target-connector="in1" target-path="/RiskChangeScor.2"/>
     </segment>
@@ -290,7 +340,7 @@
     <segment>
       <node>
         <start-node call-mode="private" name="RiskChangeVelo" secure="false"/>
-        <node-display x="11" y="1"/>
+        <node-display x="11" y="2"/>
       </node>
       <transition target-connector="in1" target-path="/RiskChangeScor.2"/>
     </segment>
@@ -299,7 +349,7 @@
     <segment>
       <node>
         <start-node call-mode="private" name="RiskChangeVmax" secure="false"/>
-        <node-display x="12" y="1"/>
+        <node-display x="12" y="2"/>
       </node>
       <transition target-connector="in1" target-path="/RiskChangeScor.2"/>
     </segment>
@@ -308,7 +358,7 @@
     <segment>
       <node>
         <start-node call-mode="private" name="RiskChangeGeox" secure="false"/>
-        <node-display x="13" y="1"/>
+        <node-display x="13" y="2"/>
       </node>
       <transition target-connector="in3" target-path="/RiskChangeScor.2"/>
     </segment>
@@ -317,7 +367,7 @@
     <segment>
       <node>
         <start-node call-mode="private" name="RiskChangeNetw" secure="false"/>
-        <node-display x="14" y="1"/>
+        <node-display x="14" y="2"/>
       </node>
       <transition target-connector="in1" target-path="/RiskChangeScor.2"/>
     </segment>
@@ -326,7 +376,7 @@
     <segment>
       <node>
         <start-node call-mode="private" name="RiskChangeReas" secure="false"/>
-        <node-display x="15" y="1"/>
+        <node-display x="15" y="2"/>
       </node>
       <transition target-connector="in1" target-path="/RiskChangeScor.2">
         <transition-display>
@@ -335,11 +385,31 @@
       </transition>
     </segment>
   </branch>
+  <branch basename="_ANONYMOUS_BRANCH_17">
+    <segment>
+      <node>
+        <text-node>
+          <description>Check if mail notification is enabled in site preferences</description>
+        </text-node>
+        <node-display x="1" y="9"/>
+      </node>
+    </segment>
+  </branch>
+  <branch basename="_ANONYMOUS_BRANCH_18">
+    <segment>
+      <node>
+        <text-node>
+          <description>Update custom attribute in order according to event that received from KountENS and send email notification if it is enabled for that</description>
+        </text-node>
+        <node-display x="3" y="9"/>
+      </node>
+    </segment>
+  </branch>
   <branch basename="CheckNotificationMailIsEnabled">
     <segment>
       <node>
         <start-node call-mode="private" name="CheckNotificationMailIsEnabled" secure="false"/>
-        <node-display x="1" y="8"/>
+        <node-display x="1" y="10"/>
       </node>
       <simple-transition>
         <transition-display>
@@ -379,7 +449,7 @@
     <segment>
       <node>
         <start-node call-mode="private" name="UpdateCustomAttribute" secure="false"/>
-        <node-display x="3" y="8"/>
+        <node-display x="3" y="10"/>
       </node>
       <simple-transition>
         <transition-display>
@@ -452,11 +522,21 @@
       </node>
     </segment>
   </branch>
+  <branch basename="_ANONYMOUS_BRANCH_21">
+    <segment>
+      <node>
+        <text-node>
+          <description>Processing WORK_STATUS_EDIT with different status</description>
+        </text-node>
+        <node-display width="3" x="6" y="9"/>
+      </node>
+    </segment>
+  </branch>
   <branch basename="StatusDECLINED">
     <segment>
       <node>
         <start-node call-mode="private" name="StatusDECLINED" secure="false"/>
-        <node-display x="6" y="8"/>
+        <node-display x="6" y="10"/>
       </node>
       <simple-transition>
         <transition-display>
@@ -495,7 +575,7 @@
     <segment>
       <node>
         <start-node call-mode="private" name="StatusAPPROVED" secure="false"/>
-        <node-display x="8" y="8"/>
+        <node-display x="8" y="10"/>
       </node>
       <simple-transition/>
       <node>
