@@ -1,0 +1,51 @@
+<certification>
+	<cartridgeInfo>
+		<name>Kount</name>
+		<version>1.0.0</version>
+		<implementer>Astound</implementer>
+	</cartridgeInfo>
+	<certificationInfo>
+		<certificationID>112</certificationID>
+		<certifiedby>
+			Brian LeBlanc
+		</certifiedby>
+		<date>
+			6/25/2013
+		</date>
+		<platform>
+			<version>13.3</version>
+			<storefront>SG2</storefront>
+		</platform>
+		<usecases>
+			<usecase>
+				<description>
+					All 12 test cases were executed bsed on what is documented in r1.0.0 version of the documentation.
+				</description>
+				<steps>
+				</steps>
+			</usecase>
+		</usecases>
+	</certificationInfo>
+	<contentInfo>
+		<file><hash>A8776B74B9F30C71F577D09D42C449CA2A04B14E</hash><name>int_kount/.project</name></file>
+		<file><hash>036C5F7436E02E71A6D1329CFDDC128FB0B35B55</hash><name>int_kount/cartridge/int_kount.properties</name></file>
+		<file><hash>A19F0525C5F7838243D520F7A45BDD6AE24FB440</hash><name>int_kount/cartridge/static/default/css/k.css</name></file>
+		<file><hash>2FE5DE5B6A6ACE2D57870200FB4821B388D9AC3A</hash><name>int_kount/cartridge/pipelines/K.xml</name></file>
+		<file><hash>77B199C042B3F1802C27E82F605A5B619755194A</hash><name>int_kount/cartridge/pipelines/K_ENS.xml</name></file>
+		<file><hash>E4566F174C2F121E218A5FE01EDE2CA5B22EA2E9</hash><name>int_kount/cartridge/templates/default/kount/logo.isml</name></file>
+		<file><hash>E00767BFB24216B201339C5C2377116644A0E990</hash><name>int_kount/cartridge/templates/default/kount/confirmationENS.isml</name></file>
+		<file><hash>5991B380E6E3CF43349FC59CD16C17A80472FC94</hash><name>int_kount/cartridge/templates/default/kount/iframe.isml</name></file>
+		<file><hash>F0F41E6A02951CA7F8A0DD378C0DACCAC75128D6</hash><name>int_kount/cartridge/templates/default/mail/risk_change.isml</name></file>
+		<file><hash>21B50EC0BAAAF405493BF9F79E4B88DF9EE6646F</hash><name>int_kount/cartridge/templates/resources/kount.properties</name></file>
+		<file><hash>2160B14F0BCCF3899030E82571610F790D40F60A</hash><name>int_kount/cartridge/scripts/kount/CheckProductInventory.ds</name></file>
+		<file><hash>FAF20662E4E56120CD092BECC897F9BC9D85CA39</hash><name>int_kount/cartridge/scripts/kount/UpdateOrder.ds</name></file>
+		<file><hash>85C38D85B00C36C9F9B1E7EFDAF0472EF554CBA5</hash><name>int_kount/cartridge/scripts/kount/KountUtils.ds</name></file>
+		<file><hash>4C4F43CCB0C269316F9A856EFA6779FE986FFF06</hash><name>int_kount/cartridge/scripts/kount/PostRiskInqueryService.ds</name></file>
+		<file><hash>8DF16344E3E4AAF68D28017E69CA979C953E5EF7</hash><name>int_kount/cartridge/scripts/kount/IPFilter.ds</name></file>
+		<file><hash>85A85D46DF4555D3AAC053B07AF624ADEF977E04</hash><name>int_kount/cartridge/scripts/kount/UpdateCustomAttribute.ds</name></file>
+		<file><hash>353675DF0AB97B68DA21F0AFA6F676D70ACA49B7</hash><name>int_kount/cartridge/scripts/kount/SelectEventNodeName.ds</name></file>
+		<file><hash>F3747D0E91EE39108AF963595CC7E9C6CF5E90A7</hash><name>int_kount/cartridge/scripts/kount/LibKount.ds</name></file>
+		<file><hash>DC416F7D2042E32E16CFB5EF51648EDC858D1922</hash><name>"documentation/Kount Implementation Guide v1.0.docx"</name></file>
+		<file><hash>866FB8C5E40572218B8FB92396FFC38ADDDA48A7</hash><name>metadata/kount_metadata.xml</name></file>
+	</contentInfo>
+</certification>
