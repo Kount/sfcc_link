@@ -48,16 +48,9 @@
       </node>
       <simple-transition/>
       <node>
-        <pipelet-node pipelet-name="CreateOrderNo" pipelet-set-identifier="bc_api">
-          <key-binding alias="OrderNo" key="OrderNo"/>
-        </pipelet-node>
-        <node-display x="0" y="1"/>
-      </node>
-      <simple-transition/>
-      <node>
         <pipelet-node pipelet-name="Assign" pipelet-set-identifier="bc_api">
           <config-property key="Transactional" value="false"/>
-          <key-binding alias="CurrentSession.sessionID.substr(0,24).replace('-','_') + Basket.getUUID().substr(0,8).replace('-','_')" key="From_0"/>
+          <key-binding alias="CurrentSession.custom.sessId" key="From_0"/>
           <key-binding alias="SessionID" key="To_0"/>
           <key-binding alias="Email" key="To_1"/>
           <key-binding alias="null" key="From_4"/>
@@ -73,6 +66,8 @@
           <key-binding alias="null" key="From_9"/>
           <key-binding alias="null" key="To_9"/>
           <key-binding alias="CurrentForms.billing.billingAddress.email.emailAddress.htmlValue" key="From_1"/>
+          <key-binding alias="CardNumber" key="To_2"/>
+          <key-binding alias="CurrentCustomer.registered ? '' : CurrentForms.billing.paymentMethods.creditCard.number.value" key="From_2"/>
         </pipelet-node>
         <node-display x="0" y="1"/>
       </node>
@@ -92,10 +87,12 @@
           <key-binding alias="Email" key="Email"/>
           <key-binding alias="Basket" key="Basket"/>
           <key-binding alias="KountOrderStatus" key="kountOrderStatus"/>
-          <key-binding alias="OrderNo" key="OrderID"/>
+          <key-binding alias="Order.orderNo" key="OrderID"/>
           <key-binding alias="HttpHeaders" key="HttpHeaders"/>
           <key-binding alias="CurrentRequest" key="currentRequest"/>
           <key-binding alias="ResponseRIS" key="responseRIS"/>
+          <key-binding alias="Order" key="Order"/>
+          <key-binding alias="CardNumber" key="cardNumber"/>
         </pipelet-node>
         <node-display x="0" y="1"/>
         <branch basename="b3" source-connector="error">
@@ -125,13 +122,13 @@
         <branch basename="b2" source-connector="yes">
           <transition target-connector="in">
             <transition-display>
-              <bend-point relative-to="source" x="0" y="1"/>
+              <bend-point relative-to="target" x="0" y="-1"/>
             </transition-display>
           </transition>
           <segment>
             <node>
-              <end-node/>
-              <node-display x="0" y="1"/>
+              <jump-node start-name-ref="K-UpdateOrder"/>
+              <node-display x="0" y="4"/>
             </node>
           </segment>
         </branch>
@@ -143,8 +140,39 @@
         </transition-display>
       </simple-transition>
       <node>
-        <jump-node start-name-ref="COBilling-Start"/>
+        <call-node start-name-ref="K-UpdateOrder"/>
         <node-display x="1" y="1"/>
+      </node>
+      <simple-transition>
+        <transition-display>
+          <bend-point relative-to="source" x="0" y="1"/>
+        </transition-display>
+      </simple-transition>
+      <node>
+        <pipelet-node pipelet-name="FailOrder" pipelet-set-identifier="bc_api">
+          <key-binding alias="Order" key="Order"/>
+        </pipelet-node>
+        <node-display x="0" y="1"/>
+        <branch basename="b3" source-connector="error">
+          <transition target-connector="in2" target-path="./+1">
+            <transition-display>
+              <bend-point relative-to="source" x="1" y="0"/>
+              <bend-point relative-to="target" x="1" y="0"/>
+            </transition-display>
+          </transition>
+        </branch>
+      </node>
+      <transition target-connector="in1" target-path="./+1"/>
+    </segment>
+    <segment>
+      <node>
+        <join-node/>
+        <node-display x="0" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <jump-node start-name-ref="COBilling-Start"/>
+        <node-display x="0" y="1"/>
       </node>
     </segment>
   </branch>
@@ -199,11 +227,12 @@
         <join-node/>
         <node-display x="0" y="1"/>
       </node>
-      <simple-transition>
-        <transition-display>
-          <bend-point relative-to="source" x="0" y="1"/>
-        </transition-display>
-      </simple-transition>
+      <simple-transition/>
+      <node>
+        <call-node start-name-ref="Cart-GetExistingBasket"/>
+        <node-display x="0" y="1"/>
+      </node>
+      <simple-transition/>
       <node>
         <decision-node condition-key="status == false" condition-operator="expr">
           <description>If status == false, then put  an iframe on the page</description>
@@ -212,24 +241,15 @@
         <branch basename="b2" source-connector="yes">
           <transition target-connector="in">
             <transition-display>
-              <bend-point relative-to="source" x="0" y="1"/>
+              <bend-point relative-to="target" x="0" y="-1"/>
             </transition-display>
           </transition>
           <segment>
             <node>
-              <call-node start-name-ref="Cart-GetExistingBasket"/>
-              <node-display x="0" y="1"/>
-            </node>
-            <simple-transition>
-              <transition-display>
-                <bend-point relative-to="source" x="0" y="1"/>
-              </transition-display>
-            </simple-transition>
-            <node>
               <interaction-node transaction-required="false">
                 <template buffered="true" dynamic="false" name="kount/iframe"/>
               </interaction-node>
-              <node-display x="0" y="1"/>
+              <node-display x="0" y="2"/>
             </node>
           </segment>
         </branch>
@@ -237,12 +257,38 @@
       <simple-transition>
         <transition-display>
           <bend-point relative-to="source" x="2" y="0"/>
-          <bend-point relative-to="target" x="0" y="-1"/>
         </transition-display>
       </simple-transition>
       <node>
+        <pipelet-node pipelet-name="Assign" pipelet-set-identifier="bc_api">
+          <config-property key="Transactional" value="false"/>
+          <key-binding alias="CurrentSession.sessionID.substr(0,24).replace('-','_','g') + Basket.getUUID().substr(0,8).replace('-','_','g')" key="From_0"/>
+          <key-binding alias="CurrentSession.custom.sessId" key="To_0"/>
+          <key-binding alias="null" key="From_1"/>
+          <key-binding alias="null" key="To_1"/>
+          <key-binding alias="null" key="From_2"/>
+          <key-binding alias="null" key="To_2"/>
+          <key-binding alias="null" key="From_3"/>
+          <key-binding alias="null" key="To_3"/>
+          <key-binding alias="null" key="From_4"/>
+          <key-binding alias="null" key="To_4"/>
+          <key-binding alias="null" key="From_5"/>
+          <key-binding alias="null" key="To_5"/>
+          <key-binding alias="null" key="From_6"/>
+          <key-binding alias="null" key="To_6"/>
+          <key-binding alias="null" key="From_7"/>
+          <key-binding alias="null" key="To_7"/>
+          <key-binding alias="null" key="From_8"/>
+          <key-binding alias="null" key="To_8"/>
+          <key-binding alias="null" key="From_9"/>
+          <key-binding alias="null" key="To_9"/>
+        </pipelet-node>
+        <node-display x="1" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
         <stop-node/>
-        <node-display x="1" y="2"/>
+        <node-display x="0" y="1"/>
       </node>
     </segment>
   </branch>

@@ -8,9 +8,11 @@
 */
 importPackage( dw.order );
 importPackage( dw.system );
+importScript("int_kount:kount/LibKount.ds");
 
 function execute( args : PipelineDictionary ) : Number {
-	var orderID : String = args.orderId,
+	var kount : Object = new KountObject(),
+		orderID : String = args.orderId,
 		order : Order = OrderMgr.getOrder(orderID);
 	if (!order) {
 		return PIPELET_ERROR;
@@ -18,29 +20,36 @@ function execute( args : PipelineDictionary ) : Number {
 	
 	order.custom["kount_Status"] = args.newStatus;
 	if (order.custom["kount_Status"] != args.newStatus) {
-		Logger.error("KOUNT: UpdateOrder.ds: kount_Status custom field wasn't save");
+		kount.writeExecutionError (new Error("KOUNT: UpdateOrder.ds: kount_Status custom field wasn't save"), "Update Orders", "error");
 		return PIPELET_ERROR;
 	}
 	
 	var response : String = args.responseRIS;
 	if(!empty(response)){
-		var params : Object = JSON.parse(response);
 		try {
+			var params : Object = JSON.parse(response);
 			if(!params.hasOwnProperty('ERRO')){
-				var elementList : Array = ['GEOX', 'NETW', 'REAS', 'SCOR', 'VELO', 'VMAX', 'TRAN'];
+				var elementList : Array = ['GEOX', 'NETW', 'SCOR', 'VELO', 'VMAX', 'TRAN', 'BROWSER', 'OS', 'IP_ORG', 'CARDS', 'DEVICES', 'COUNTRY', 'EMAILS', 'REASON_CODE' , 'REPLY'];
 				for(var i = 0; i < elementList.length; i++){
 					var elem : String = elementList[i];
-					if(elem in params){
+					if (elem == "REPLY") {
+						order.custom['kount_'+elem] = params['AUTO'];
+						if (order.custom['kount_'+elem] != params['AUTO']) {
+							kount.writeExecutionError (new Error("KOUNT: UpdateOrder.ds: kount_" + elem + " custom field wasn't save"), "Update Orders", "error");
+							return PIPELET_ERROR;
+						}
+					} else if(elem in params){
 						order.custom['kount_'+elem] = params[elem];
 						if (order.custom['kount_'+elem] != params[elem]) {
-							Logger.error("KOUNT: UpdateOrder.ds: kount_"+elem+" custom field wasn't save");
+							kount.writeExecutionError (new Error("KOUNT: UpdateOrder.ds: kount_" + elem + " custom field wasn't save"), "Update Orders", "error");
 							return PIPELET_ERROR;
 						}
 					}
 				}
 			}
 		} catch (err){
-			throw err;
+			kount.writeExecutionError (err, "Update Orders", "error");
+			return PIPELET_ERROR;
 		}
 	}
 	

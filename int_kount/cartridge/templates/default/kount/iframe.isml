@@ -4,7 +4,8 @@
 	
 	var kount : Object = new KountObject();
 	
-	var sessionId : String = pdict.CurrentSession.sessionID.substr(0,24).replace('-','_') + pdict.Basket.getUUID().substr(0,8).replace('-','_');
+	var sessionId : String = pdict.CurrentSession.sessionID.substr(0,24).replace('-','_','g') + pdict.Basket.getUUID().substr(0,8).replace('-','_','g');
+	session.custom['sessId'] = sessionId;
 	var merchantId : String = kount._getMercahntID();
 	var DC_url : String = kount._getDCUrl();
 </isscript>

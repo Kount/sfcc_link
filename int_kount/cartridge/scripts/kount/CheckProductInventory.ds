@@ -1,29 +1,37 @@
 /**
 *    Check Inventory for Product, in case if doesn't exist then order will Fail otherwise PlaceOrder.
 *
-*    @input order : Order
+*    @input Order : dw.order.Order
 *
 */
 importPackage( dw.system );
 importPackage( dw.catalog );
 importPackage( dw.order );
 importPackage( dw.util );
+importScript("int_kount:kount/LibKount.ds");
 
 
 function execute( args : PipelineDictionary ) : Number {
 	
-	var order : Order = args.order,
+	var kount : Object = new KountObject(),
+		order : Order = args.Order,
 		inventoryList : ProductInventoryList = ProductInventoryMgr.getInventoryList(),
 		productItems : Collection = order.getAllProductLineItems(),
 		iter : Iterator = productItems.iterator();
 	
 	while(!empty(iter) && iter.hasNext()){
-		var product : Product = iter.next();
-		var inventory : ProductInventoryRecord = inventoryList.getRecord(product.productID);
-		if(empty(inventory)){
-			Logger.error("KOUNT: CheckProductInventory.ds: inventory haven't found");
-			return PIPELET_ERROR;
+		var product : Product = iter.next().getProduct();
+		
+		if (!empty(product)){
+			if (product.variant || product.product || product.bundle) {
+				var inventory : ProductInventoryRecord = inventoryList.getRecord(product.getID());
+				if(empty(inventory)){
+					kount.writeExecutionError(new Error ("KOUNT: CheckProductInventory.ds: inventory haven't found"), "CheckProductInventory.ds", "error");
+					return PIPELET_ERROR;
+				}
+			}
 		}
+
 	}
 		
     return PIPELET_NEXT;

@@ -8,6 +8,7 @@
 importPackage( dw.system );
 importPackage( dw.web );
 importPackage( dw.net);
+importPackage( dw.util );
 
 var KountUtilsObject = function (){
 	
@@ -16,7 +17,9 @@ var KountUtilsObject = function (){
 		parseEnsXMLtoObject : function(xmlBody : String, eventTypeMap : Object){
 			 var eventData : Object = {},
 			 	 xmlObj = new XML(xmlBody),
-			 	 xmlList : XMLList = xmlObj.children('event');
+			 	 xmlList : XMLList = xmlObj.children('event'),
+			 	 eventDataMap : ArrayList = new ArrayList();
+			 	 
 			 for each( var item in xmlList ){
 				if(item.name in eventTypeMap){
 					var paramName : Array = item.name.toString().split('_');
@@ -28,11 +31,13 @@ var KountUtilsObject = function (){
 						site : item.key.@site.toString() || '',
 						oldValue : item.old_value.toString(),
 						newValue : item.new_value.toString(),
+						reasonCode : item.new_value.@reason_code.toString(),
 						date : item.occurred.toString()
 					}
+					eventDataMap.add1(eventData);
 				}
     		}
-			return eventData;
+			return eventDataMap;
 		}
 	}
 }

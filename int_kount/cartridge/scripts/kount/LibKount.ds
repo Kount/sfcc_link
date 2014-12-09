@@ -1,16 +1,24 @@
 /**
-*	This file is intended to be the realized all function necessary to work with Kount.
-*	All helper/util functions are dedicated into KountUtils.ds file.
-*
-*	@author Aleksandr Puchka, Astound Commerce
-*	@version 1.0
-*/
+ *	This file is intended to be the realized all function necessary to work with Kount.
+ *	All helper/util functions are dedicated into KountUtils.ds file.
+ *
+ *	@author Aleksandr Puchka, Astound Commerce
+ *	@version 1.0
+ */
 
 importPackage( dw.system );
 importPackage( dw.web );
-importPackage( dw.net);
+importPackage( dw.net );
+importPackage( dw.util );
+importPackage( dw.order );
+importPackage( dw.customer );
+importPackage( dw.object );
 
 var KountObject = function (){
+	var logger : Log = Logger.getLogger("Kount", ""),
+		emailList : Array = Site.getCurrent().getCustomPreferenceValue("kount_NotificationEmail") || [],
+		SiteName : String = Site.getCurrent().getName(),
+		UDFFields : Array = Site.getCurrent().getCustomPreferenceValue("kount_UDF") || [];
 	
 	return {
 		
@@ -65,14 +73,21 @@ var KountObject = function (){
 			for (var key in RequiredInquiryKeysVal){
 				try {
 					var param = !empty(RequiredInquiryKeysVal[key]) ? RequiredInquiryKeysVal[key] : '';
-					if(typeof param === 'object'){
-						for(var i=0; i<param.length; i++){
-							body.push(new HTTPRequestPart(key+"["+i+"]", param[i]));	
-						}	
-					} else {
+					if(typeof param === 'object' && !empty(param)){
+						if(key === 'UDF'){
+							for(var i=0; i<param.length; i++){
+								body.push(new HTTPRequestPart(key+"["+param[i].label+"]", param[i].value));	
+							}	
+						} else {
+							for(var i=0; i<param.length; i++){
+								body.push(new HTTPRequestPart(key+"["+i+"]", param[i]));	
+							}	
+						}
+					} else if (!empty(param)){
 						body.push(new HTTPRequestPart(key, param));
 					}
 				} catch (err){
+					this.writeExecutionError(err, "PostRISRequest", "error");
  		    		throw err;
  		    	}
 			}
@@ -88,24 +103,274 @@ var KountObject = function (){
 					return status;
 				}
  		    } catch (err){
+ 		    	this.writeExecutionError(err, "PostRISRequest", "error");
  		    	throw err;
  		    }
 		},
 		
 		evaluateRISResponse : function(response : String){
 			var status : String = "APPROVED",
-				params : Object = JSON.parse(response);
+				params : Object = {};
 			try {
+				params = JSON.parse(response);
 				if('ERRO' in params){
+					this.writeServiceError(params, "evaluateRISResponse", "ERROR_");
 					return status;
 				} else {
 					var responseCode : String = params['AUTO'],
 						statusMap : Object = { A : 'APPROVED', D : 'DECLINED', R : 'HOLD', E : 'HOLD' };
+					
+					if("WARNING_0" in params) this.writeServiceError(params, "evaluateRISResponse", "WARNING_");	
 					return statusMap[responseCode];
 				}
 			} catch (err){
- 		    	throw err;
- 		    }
+				if (!this.plainTextHandler(response)){ 
+					this.writeExecutionError(err, "evaluateRISResponse", "error");
+				}
+ 		    	return status;
+ 		    } 
+		}, 
+		
+		/**
+		*	Method that write ERRORs in execution
+		*	@param {Error} Error object
+		*	@param {String} Name of method
+		*	@param {String} type of error
+		*/
+   		writeExecutionError : function (error : Error, actionName : String, type : String) {
+   			var message : String = error.message,
+				time : String = new Date().toISOString(),
+				actionName : String = actionName || 'Exception';
+			
+			switch(type){
+				case "error":
+					var errorString : String = Resource.msgf("error.exeption", "error", null, actionName, message).replace(new RegExp(/(?!<\")\/[^]+\/(?!\")/g), "");
+					logger.error(errorString, "");
+					if (!empty(emailList)) {
+						this.sendEmailNotification(errorString);
+					} else {
+						this.writeExecutionError(new Error("Email List is empty"), "writeExecutionError", "warn");
+					}
+					break;
+				case "warn":
+					var errorString : String = Resource.msgf("error.exeption", "error", null, actionName, message);
+						logger.warn(errorString, "");
+					break;
+			}	
+			
+		}, 
+		
+		/**
+		*	Method that write response ERRORs
+		*	@param {Object} Response from request 
+		*	@param {String} Name of method
+		*	@param {String} Type of error 
+		*/
+   		writeServiceError : function(response : Object, method : String, type : String){
+   			var errorParam : String = type + "COUNT",
+   				errorArray : Array = [];
+   			if(!empty(response) && errorParam in response){
+   				var count =  response[errorParam]; 
+   				for (var  i = 0; i < count; i++){
+   					var errorNumber : String = type + i;
+   					if (errorNumber in response) {
+   						errorArray.push(response[errorNumber]);
+   					}
+   				}
+   				switch(type){
+					case "ERROR_":
+						this.writeExecutionError(new Error(errorArray.join(";")), method, "error");
+						break;
+					case "WARNING_":
+						this.writeExecutionError(new Error(errorArray.join(";")), method, "warn");
+						break;
+				}	
+   			}   			
+   		}, 
+   		/**
+		*	Method that write responses ERRORs
+		*	@param {Stirng} Response from request 
+		*	return {Boolean} Show status if it is a plain text response
+		*/
+   		plainTextHandler : function (response : string){
+			var status : Boolean = true;
+   			if (response.indexOf("\n") != -1){
+   				var responseArray : Array = response.split("\n"),
+   					errorArray : Array = [];
+   				for (var i = 0; i < responseArray.length-1; i++){
+   					if(responseArray[i].indexOf("ERROR_") != -1 && responseArray[i].indexOf("ERROR_COUNT") == -1){
+   						errorArray.push(responseArray[i]);
+   					}
+   				}
+   				this.writeExecutionError(new Error(errorArray.join(";")), "plainTextHandler", "error");
+   			} else {
+   				status = false;
+   			}
+   			
+   			return status;
+   		}, 
+   		
+   		/**
+		*	Method that send email notification about errors
+		*	@param {String} Error message
+		*/
+		sendEmailNotification : function(msg : String){
+			var template: Template = new Template("mail/errornotification"),
+				templateMap : Map = new HashMap(), 
+				mailMsg : Mail = new Mail();
+				
+			templateMap.put("ErrorName", "Error during execution");
+			templateMap.put("MailTo", emailList.join(","));
+			templateMap.put("SiteName", SiteName);
+			templateMap.put("ErrorDescription", msg);
+			
+			mailMsg.addTo(emailList.join(","));
+			mailMsg.setFrom("noreply@noreply.com");
+  			mailMsg.setSubject("Error during execution");
+  			mailMsg.setContent(template.render(templateMap));
+
+  			mailMsg.send();
+		}, 
+		/**
+		*	Method creates UDF fields for request
+		*	@param {Order} Order
+		*	return {Array} return UDF array with structure lable : value
+		*/
+		getUDFFields : function (order : Order){
+			var fields : Array = UDFFields,
+				UDF : Array = [],
+				UDFMap : HashMap = this.getUDFObjectMap(order);
+				
+			try {
+				if (!empty(fields)){
+					for(let i = 0;i < fields.length;i++){
+						var field : Array = fields[i].split("|");
+						
+						field[0] = StringUtils.trim(field[0]);	
+						field[1] = StringUtils.trim(field[1]).split(".");
+						if(!empty(field[1][1])){
+							var mapObject : Object = UDFMap.get(field[1][0].toLowerCase()),
+								value : String = !empty(mapObject) ? this.getUDFFieldValue(mapObject.meta, mapObject.object, field[1][1]) : "";
+							if(!empty(value)){
+								UDF.push({
+									"label" : field[0],
+									"value" : value
+								});
+							}
+						} else {
+							this.writeExecutionError(new Error("UDF field doesn't setup correctly: " +  fields[i]),"getUDFFields", "warn");
+						}	
+					}
+				}
+			} catch(e){
+				this.writeExecutionError(e,"getUDFFields", "error");
+			}
+			return UDF;
+		}, 
+		/**
+		*	Method creates UDF fields for request
+		*	@param {Object} Described object
+		*	@param {String} Attributes name 
+		* 	return {Object}
+		*/
+		getUDFFieldValue : function (meta : Object, object : Object, propertyName : String){
+			var attribute : ObjectAttributeDefinition = meta.getSystemAttributeDefinition(propertyName) || meta.getCustomAttributeDefinition(propertyName),
+				value : String = "";
+				
+			if (!empty(attribute)){
+				switch (attribute.valueTypeCode) {
+				case ObjectAttributeDefinition.VALUE_TYPE_DATE:
+					value = this.getUDFValue(attribute, object, propertyName);
+					if(!empty(value)){
+						value = StringUtils.formatCalendar(new Calendar(value), "yyyy-MM-dd");
+					} else {
+						value = "";
+					}
+					
+					break;
+				case ObjectAttributeDefinition.VALUE_TYPE_DATETIME:
+					value = this.getUDFValue(attribute, object, propertyName);
+					if(!empty(value)){
+						value = StringUtils.formatCalendar(new Calendar(value), "yyyy-MM-dd");
+					} else {
+						value = "";
+					}
+					break;
+				case ObjectAttributeDefinition.VALUE_TYPE_BOOLEAN:
+					break;
+				case ObjectAttributeDefinition.VALUE_TYPE_PASSWORD:
+					break;
+				default:
+					value = this.getUDFValue(attribute, object, propertyName);
+					if(empty(value)){ 
+						value = "";
+					}
+				}
+			}
+			return value;
+		},
+		/**
+		*	Method creates UDF fields for request
+		*	@param {Object} Order
+		*	return {String} value of attribute
+		*/
+		getUDFValue : function (attribute : ObjectAttributeDefinition, object : Object, propertyName : String){
+			if (!attribute.multiValueType && attribute.system) {
+				return object[propertyName];
+			} else if (!attribute.multiValueType && !attribute.system) {
+				return object.custom[propertyName];
+			} else {
+				return null
+			}
+		},
+		/**
+		*	Method creates UDF fields for request
+		*	@param {Order} Order
+		*	return {HashMap} mapped object for UDF
+		*/
+		getUDFObjectMap : function (order : Order){
+			var UDFMap : HashMap = new HashMap(),
+				shippingAddress : OrderAddress = order.getDefaultShipment().getShippingAddress(),
+				billingAddress : OrderAddress = order.getBillingAddress(),
+				profile : Profile = order.getCustomer().getProfile();
+			
+			UDFMap.put("shippingaddress", {
+									"meta" : shippingAddress.describe(),
+									"object" : shippingAddress
+									});
+			UDFMap.put("billingaddress", {
+									"meta" : billingAddress.describe(),
+									"object" : billingAddress
+									});
+			!empty(profile) ? UDFMap.put("profile", {
+									"meta" : profile.describe(),
+									"object" : profile
+									}) : null;
+			UDFMap.put("order", {
+									"meta" : order.describe(),
+									"object" : order
+									});
+				
+			return UDFMap;
+		}, 
+		/**
+		*	Method creates UDF fields for request
+		*	@param {Collection} Order
+		*	return {Payment} First Payment method
+		*/
+		getPayment : function (payments : Collection) {
+			if (payments.length > 1) {
+				var iterator : Iterator = payments.iterator();
+				while(!empty(iterator) && iterator.hasNext()){
+					var payment : PaymentInstrument = iterator.next();
+					
+					if("CREDIT_CARD" == payment.getPaymentMethod() || "PayPal" == payment.getPaymentMethod()){
+						return payment
+					} 
+				}
+			} else {
+				return payments[0];
+			}
 		}
 	}
 }

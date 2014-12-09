@@ -22,18 +22,23 @@ function execute( args : PipelineDictionary ) : Number {
 	var attrName : String = !empty(args.attrName) ? args.attrName : eventData['attributeName'],
 		attrValue : String = eventData['newValue'];
 	
+	if(attrName == "REASON_CODE"){
+		attrValue = eventData["reasonCode"];
+	}
+	
 	if(attrName == "Status"){
 		var statusMap : Object = { A : 'APPROVED', D : 'DECLINED', R : 'HOLD', E : 'HOLD', C : 'CHANGE', X : 'TIME OUT', Y : 'TIME OUT PAYMENT' },
 		attrValue = statusMap[eventData['newValue']];
 		args.orderStatus = 'K_ENS-Status'+attrValue;
 	}
-		 
-	order.custom["kount_"+attrName] = attrValue;
-	if (order.custom["kount_"+attrName] != attrValue) {
-		Logger.error("KOUNT: UpdateCustomAttribute.ds: kount_"+attrName+" custom field wasn't save");
+	
+	try{
+		order.custom["kount_"+attrName] = attrValue;
+	} catch(e){
+		kount.writeExecutionError (new Error("KOUNT: UpdateCustomAttribute.ds: kount_" + attrName + " custom field wasn't save"), "Update Orders", "error");
 		return PIPELET_ERROR;
 	}
 	
-	args.mailTo = kount._getEmailList();
+	args.mailTo = kount._getEmailList().join(",");
     return PIPELET_NEXT;
 } 

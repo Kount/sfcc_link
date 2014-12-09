@@ -1,0 +1,27 @@
+/**
+* Set the order export status to EXPORT_STATUS_READY
+*
+* @input Order : dw.order.Order The order.
+* @input KountOrderStatus : String
+*/
+importPackage( dw.order );
+
+function execute( pdict : PipelineDictionary ) : Number
+{
+    // read pipeline dictionary input parameter
+    var order : Order = pdict.Order;
+   
+    // get Kount order status result
+    var newOrderStatus : String = pdict.KountOrderStatus,
+    	statusMap : Object = { A : 'APPROVED', D : 'DECLINED', R : 'HOLD', E : 'HOLD' },
+    	kountOrderStatus = statusMap[newOrderStatus];
+    
+    // Special case if Kount order status is HOLD
+   if( !empty( kountOrderStatus ) && kountOrderStatus == 'APPROVED' && order.getExportStatus().getDisplayValue() != 'EXPORTED' ) {
+		order.setExportStatus(Order.EXPORT_STATUS_READY);    	
+   } else if( !empty( kountOrderStatus ) && ( kountOrderStatus == 'DECLINED' || kountOrderStatus == 'HOLD' ) ) {
+    	order.setExportStatus(Order.EXPORT_STATUS_NOTEXPORTED);
+   } 
+   
+   return PIPELET_NEXT;
+}
