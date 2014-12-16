@@ -54,6 +54,10 @@ var KountObject = function (){
 			return Site.getCurrent().getCustomPreferenceValue('kount_EmailList') || "";
 		},
 		
+		_getServiceTimeOut : function(){
+			return Site.getCurrent().getCustomPreferenceValue('kount_ServiceTimeOut') || 5000;
+		},
+		
 		filterIP : function(IP: String){
 		   var listIP : String = this._getIPList(),
 		   	   status : Boolean = false;
@@ -93,7 +97,7 @@ var KountObject = function (){
 			}
 			   		    
  		    try {
- 		    	httpClient.setTimeout(5000);
+ 		    	httpClient.setTimeout(this._getServiceTimeOut());
 	 		    httpClient.open("POST", risUrl);
 				httpClient.sendMultiPart(body);
 				if (httpClient.statusCode == 200){

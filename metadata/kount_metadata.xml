@@ -304,6 +304,14 @@
                 <field-length>0</field-length>
                 <default-value>https://risk.test.kount.net</default-value>
             </attribute-definition>
+			<attribute-definition attribute-id="kount_ServiceTimeOut">
+                <display-name xml:lang="x-default">Kount Service TimeOut</display-name>
+                <type>int</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <field-length>0</field-length>
+                <default-value>5000</default-value>
+            </attribute-definition>
             <attribute-definition attribute-id="kount_UDF">
                 <display-name xml:lang="x-default">Kount UDF fields</display-name>
                 <type>set-of-string</type>
@@ -323,6 +331,7 @@
             <attribute-group group-id="Kount">
                 <display-name xml:lang="x-default">Kount</display-name>
                 <attribute attribute-id="kount_IsEnabled"/>
+				<attribute attribute-id="kount_ServiceTimeOut"/>
                 <attribute attribute-id="kount_DCUrl"/>
                 <attribute attribute-id="kount_RISServerUrl"/>
 				<attribute attribute-id="kount_AWCLink"/>
