@@ -6,16 +6,10 @@
 *	@output EventDataMap : dw.util.ArrayList
 *
 */
-importPackage( dw.system );
-importPackage( dw.net );
-importPackage( dw.util );
-importScript("int_kount:kount/KountUtils.ds");
 
 function execute( args : PipelineDictionary ) : Number {
 	var xmlBody : String = args.Parameters.getRequestBodyAsString();
-    var kountUtils = new KountUtilsObject(),
-		eventTypeMap : Object = { 
-			SPECIAL_ALERT_TRANSACTION : 'K_ENS-SpecialAlertTransaction',
+    var eventTypeMap : Object = { 
 			WORKFLOW_STATUS_EDIT : 'K_ENS-WorkflowStatusEdit',
 			WORKFLOW_REEVALUATE : 'K_ENS-WorkflowReevaluate',
 			WORKFLOW_NOTES_ADD : 'K_ENS-WorkflowNotesAdd',
@@ -27,7 +21,7 @@ function execute( args : PipelineDictionary ) : Number {
 			RISK_CHANGE_NETW : 'K_ENS-RiskChangeNetw',
 			RISK_CHANGE_REAS : 'K_ENS-RiskChangeReas'
 		},
-		xmlObjMap : ArrayList = kountUtils.parseEnsXMLtoObject(xmlBody, eventTypeMap);
+		xmlObjMap : dw.util.ArrayList = require('~/cartridge/scripts/kount/KountUtils').parseEnsXMLtoObject(xmlBody, eventTypeMap);
 	
 	args.NodeName = eventTypeMap;
 	args.EventDataMap = xmlObjMap;

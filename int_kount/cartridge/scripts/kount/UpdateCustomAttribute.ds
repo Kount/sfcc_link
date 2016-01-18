@@ -9,12 +9,11 @@
 */
 importPackage( dw.system );
 importPackage( dw.order );
-importScript("int_kount:kount/LibKount.ds");
 
 function execute( args : PipelineDictionary ) : Number {
 	var eventData : Object = args.eventData,
 		order : Order = OrderMgr.getOrder(eventData['orderNo']),
-		kount = new KountObject();
+		kount = require('~/cartridge/scripts/kount/LibKount');
 	if (!order) {
 		return PIPELET_ERROR;
 	}
@@ -33,7 +32,14 @@ function execute( args : PipelineDictionary ) : Number {
 	}
 	
 	try{
-		order.custom["kount_"+attrName] = attrValue;
+		if (attrName != "Status" || order.custom.kount_Status == "HOLD") {
+			order.custom["kount_"+attrName] = attrValue;
+		}
+		
+		if( attrName == 'SCOR') {
+			order.setExportStatus(order.EXPORT_STATUS_READY);
+		}
+		
 	} catch(e){
 		kount.writeExecutionError (new Error("KOUNT: UpdateCustomAttribute.ds: kount_" + attrName + " custom field wasn't save"), "Update Orders", "error");
 		return PIPELET_ERROR;

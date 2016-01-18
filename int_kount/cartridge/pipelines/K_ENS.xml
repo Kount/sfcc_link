@@ -158,6 +158,66 @@
         </transition-display>
       </simple-transition>
       <node>
+        <pipelet-node pipelet-name="Script" pipelet-set-identifier="bc_api">
+          <config-property key="Transactional" value="true"/>
+          <config-property key="OnError" value="PIPELET_ERROR"/>
+          <config-property key="ScriptFile" value="kount/UpdateCustomAttribute.ds"/>
+          <key-binding alias="Log" key="ScriptLog"/>
+          <key-binding alias="EventData" key="eventData"/>
+          <key-binding alias="MailTo" key="mailTo"/>
+          <key-binding alias="&quot;SCOR&quot;" key="attrName"/>
+          <key-binding alias="orderStatus" key="orderStatus"/>
+        </pipelet-node>
+        <node-display x="0" y="1"/>
+        <branch basename="b2" source-connector="error">
+          <transition target-connector="in2" target-path="./+1">
+            <transition-display>
+              <bend-point relative-to="source" x="1" y="0"/>
+              <bend-point relative-to="target" x="1" y="0"/>
+            </transition-display>
+          </transition>
+        </branch>
+      </node>
+      <transition target-connector="in1" target-path="./+1"/>
+    </segment>
+    <segment>
+      <node>
+        <join-node/>
+        <node-display x="0" y="1"/>
+      </node>
+      <simple-transition>
+        <transition-display>
+          <bend-point relative-to="source" x="0" y="1"/>
+        </transition-display>
+      </simple-transition>
+      <node>
+        <pipelet-node pipelet-name="Assign" pipelet-set-identifier="bc_api">
+          <config-property key="Transactional" value="false"/>
+          <key-binding alias="require('int_kount/cartridge/scripts/kount/LibKount')._getNotificationEmailList().join(&quot;,&quot;)" key="From_0"/>
+          <key-binding alias="MailTo" key="To_0"/>
+          <key-binding alias="null" key="From_1"/>
+          <key-binding alias="null" key="To_1"/>
+          <key-binding alias="null" key="From_2"/>
+          <key-binding alias="null" key="To_2"/>
+          <key-binding alias="null" key="From_3"/>
+          <key-binding alias="null" key="To_3"/>
+          <key-binding alias="null" key="From_4"/>
+          <key-binding alias="null" key="To_4"/>
+          <key-binding alias="null" key="From_5"/>
+          <key-binding alias="null" key="To_5"/>
+          <key-binding alias="null" key="From_6"/>
+          <key-binding alias="null" key="To_6"/>
+          <key-binding alias="null" key="From_7"/>
+          <key-binding alias="null" key="To_7"/>
+          <key-binding alias="null" key="From_8"/>
+          <key-binding alias="null" key="To_8"/>
+          <key-binding alias="null" key="From_9"/>
+          <key-binding alias="null" key="To_9"/>
+        </pipelet-node>
+        <node-display x="0" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
         <pipelet-node pipelet-name="GetOrder" pipelet-set-identifier="bc_api">
           <key-binding alias="EventData.orderNo" key="OrderNo"/>
           <key-binding alias="Order" key="Order"/>
@@ -177,9 +237,9 @@
       <node>
         <pipelet-node custom-name="Send order confirmation email" pipelet-name="SendMail" pipelet-set-identifier="bc_api">
           <key-binding alias="&quot;noreply@demandware.net&quot;" key="MailFrom"/>
-          <key-binding alias="&quot;mail/orderconfirmation&quot;" key="MailTemplate"/>
-          <key-binding alias="Order.customerEmail" key="MailTo"/>
-          <key-binding alias="&quot;Your order with Demandware online store&quot;" key="MailSubject"/>
+          <key-binding alias="&quot;mail/risk_change&quot;" key="MailTemplate"/>
+          <key-binding alias="MailTo" key="MailTo"/>
+          <key-binding alias="&quot;Notification mail&quot;" key="MailSubject"/>
           <key-binding alias="null" key="LocaleID"/>
           <key-binding alias="null" key="MailBCC"/>
         </pipelet-node>
@@ -266,7 +326,7 @@
         </pipelet-node>
         <node-display x="0" y="1"/>
         <branch basename="b2" source-connector="error">
-          <transition target-connector="in1" target-path="./b3.1">
+          <transition target-connector="in1" target-path="./+1">
             <transition-display>
               <bend-point relative-to="source" x="2" y="0"/>
             </transition-display>
@@ -275,34 +335,40 @@
       </node>
       <simple-transition/>
       <node>
-        <pipelet-node pipelet-name="Script" pipelet-set-identifier="bc_api">
-          <config-property key="Transactional" value="true"/>
-          <config-property key="OnError" value="PIPELET_ERROR"/>
-          <config-property key="ScriptFile" value="kount/UpdateOrderExportStatus.ds"/>
-          <key-binding alias="Log" key="ScriptLog"/>
-          <key-binding alias="EventData.newValue" key="KountOrderStatus"/>
-          <key-binding alias="Order" key="Order"/>
-        </pipelet-node>
+        <decision-node condition-key="require('dw/order/Order').ORDER_STATUS_CREATED == Order.getStatus()" condition-operator="expr"/>
         <node-display x="0" y="1"/>
-        <branch basename="b3" source-connector="error">
-          <transition target-connector="in2"/>
+        <branch basename="b3" source-connector="yes">
+          <transition target-connector="in"/>
           <segment>
             <node>
-              <join-node/>
-              <node-display x="1" y="0"/>
+              <pipelet-node pipelet-name="Script" pipelet-set-identifier="bc_api">
+                <config-property key="Transactional" value="true"/>
+                <config-property key="OnError" value="PIPELET_ERROR"/>
+                <config-property key="ScriptFile" value="kount/UpdateOrderExportStatus.ds"/>
+                <key-binding alias="Log" key="ScriptLog"/>
+                <key-binding alias="EventData.newValue" key="KountOrderStatus"/>
+                <key-binding alias="Order" key="Order"/>
+              </pipelet-node>
+              <node-display x="0" y="1"/>
+              <branch basename="b2" source-connector="error">
+                <transition target-connector="in2" target-path="../+2"/>
+              </branch>
             </node>
-            <transition target-connector="in1" target-path="../+1">
-              <transition-display>
-                <bend-point relative-to="target" x="2" y="0"/>
-              </transition-display>
-            </transition>
+            <simple-transition/>
+            <node>
+              <call-node start-name-key="orderStatus"/>
+              <node-display x="0" y="1"/>
+            </node>
+            <transition target-connector="in1" target-path="../+3"/>
           </segment>
         </branch>
       </node>
-      <simple-transition/>
+      <transition target-connector="in2" target-path="./+1"/>
+    </segment>
+    <segment>
       <node>
-        <call-node start-name-key="orderStatus"/>
-        <node-display x="0" y="1"/>
+        <join-node/>
+        <node-display x="1" y="0"/>
       </node>
       <transition target-connector="in1" target-path="./+1"/>
     </segment>
@@ -310,6 +376,17 @@
       <node>
         <join-node/>
         <node-display x="0" y="1"/>
+      </node>
+      <transition target-connector="in1" target-path="./+1">
+        <transition-display>
+          <bend-point relative-to="target" x="2" y="0"/>
+        </transition-display>
+      </transition>
+    </segment>
+    <segment>
+      <node>
+        <join-node/>
+        <node-display x="-1" y="2"/>
       </node>
       <simple-transition>
         <transition-display>
@@ -527,7 +604,7 @@
         <text-node>
           <description>Check if mail notification is enabled in site preferences</description>
         </text-node>
-        <node-display x="1" y="10"/>
+        <node-display x="1" y="11"/>
       </node>
     </segment>
   </branch>
@@ -537,7 +614,17 @@
         <text-node>
           <description>Update custom attribute in order according to event that received from KountENS and send email notification if it is enabled for that</description>
         </text-node>
-        <node-display x="3" y="10"/>
+        <node-display x="3" y="11"/>
+      </node>
+    </segment>
+  </branch>
+  <branch basename="_ANONYMOUS_BRANCH_21">
+    <segment>
+      <node>
+        <text-node>
+          <description>Processing WORK_STATUS_EDIT with different status</description>
+        </text-node>
+        <node-display width="3" x="6" y="11"/>
       </node>
     </segment>
   </branch>
@@ -545,7 +632,7 @@
     <segment>
       <node>
         <start-node call-mode="private" name="CheckNotificationMailIsEnabled" secure="false"/>
-        <node-display x="1" y="11"/>
+        <node-display x="1" y="12"/>
       </node>
       <simple-transition>
         <transition-display>
@@ -585,7 +672,7 @@
     <segment>
       <node>
         <start-node call-mode="private" name="UpdateCustomAttribute" secure="false"/>
-        <node-display x="3" y="11"/>
+        <node-display x="3" y="12"/>
       </node>
       <simple-transition>
         <transition-display>
@@ -658,21 +745,11 @@
       </node>
     </segment>
   </branch>
-  <branch basename="_ANONYMOUS_BRANCH_23">
-    <segment>
-      <node>
-        <text-node>
-          <description>Processing WORK_STATUS_EDIT with different status</description>
-        </text-node>
-        <node-display width="3" x="6" y="10"/>
-      </node>
-    </segment>
-  </branch>
   <branch basename="StatusDECLINED">
     <segment>
       <node>
         <start-node call-mode="private" name="StatusDECLINED" secure="false"/>
-        <node-display x="6" y="11"/>
+        <node-display x="6" y="12"/>
       </node>
       <simple-transition>
         <transition-display>
@@ -711,7 +788,7 @@
     <segment>
       <node>
         <start-node call-mode="private" name="StatusAPPROVED" secure="false"/>
-        <node-display x="8" y="11"/>
+        <node-display x="8" y="12"/>
       </node>
       <simple-transition/>
       <node>
@@ -719,7 +796,7 @@
           <config-property key="Transactional" value="false"/>
           <config-property key="OnError" value="PIPELET_ERROR"/>
           <config-property key="ScriptFile" value="kount/CheckProductInventory.ds"/>
-          <key-binding alias="null" key="ScriptLog"/>
+          <key-binding alias="Log" key="ScriptLog"/>
           <key-binding alias="Order" key="Order"/>
         </pipelet-node>
         <node-display x="0" y="1"/>
@@ -734,7 +811,7 @@
               <pipelet-node pipelet-name="FailOrder" pipelet-set-identifier="bc_api">
                 <key-binding alias="Order" key="Order"/>
               </pipelet-node>
-              <node-display x="1" y="1"/>
+              <node-display x="1" y="4"/>
               <branch basename="b2" source-connector="error">
                 <transition target-connector="in2" target-path="./+1">
                   <transition-display>
@@ -758,6 +835,43 @@
       <simple-transition/>
       <node>
         <call-node start-name-ref="COPlaceOrder-PlaceOrder"/>
+        <node-display x="0" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <call-node start-name-ref="COPlaceOrder-CreateGiftCertificates"/>
+        <node-display x="0" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <pipelet-node pipelet-name="Assign" pipelet-set-identifier="bc_api">
+          <config-property key="Transactional" value="false"/>
+          <key-binding alias="dw.system.Site.getCurrent().getCustomPreferenceValue('customerServiceEmail')" key="From_0"/>
+          <key-binding alias="MailFrom" key="To_0"/>
+          <key-binding alias="dw.web.Resource.msg('order.orderconfirmation-email.001','order',null)+ &quot; &quot; + Order.orderNo" key="From_1"/>
+          <key-binding alias="MailSubject" key="To_1"/>
+          <key-binding alias="&quot;mail/orderconfirmation&quot;" key="From_2"/>
+          <key-binding alias="MailTemplate" key="To_2"/>
+          <key-binding alias="Order.customerEmail" key="From_3"/>
+          <key-binding alias="MailTo" key="To_3"/>
+          <key-binding alias="null" key="From_4"/>
+          <key-binding alias="null" key="To_4"/>
+          <key-binding alias="null" key="From_5"/>
+          <key-binding alias="null" key="To_5"/>
+          <key-binding alias="null" key="From_6"/>
+          <key-binding alias="null" key="To_6"/>
+          <key-binding alias="null" key="From_7"/>
+          <key-binding alias="null" key="To_7"/>
+          <key-binding alias="null" key="From_8"/>
+          <key-binding alias="null" key="To_8"/>
+          <key-binding alias="null" key="From_9"/>
+          <key-binding alias="null" key="To_9"/>
+        </pipelet-node>
+        <node-display x="0" y="1"/>
+      </node>
+      <simple-transition/>
+      <node>
+        <call-node start-name-ref="Mail-SecureSend"/>
         <node-display x="0" y="1"/>
       </node>
       <transition target-connector="in1" target-path="./+1"/>

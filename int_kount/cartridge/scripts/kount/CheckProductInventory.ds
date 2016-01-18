@@ -8,12 +8,11 @@ importPackage( dw.system );
 importPackage( dw.catalog );
 importPackage( dw.order );
 importPackage( dw.util );
-importScript("int_kount:kount/LibKount.ds");
 
 
 function execute( args : PipelineDictionary ) : Number {
 	
-	var kount : Object = new KountObject(),
+	var kount = require('~/cartridge/scripts/kount/LibKount'),
 		order : Order = args.Order,
 		inventoryList : ProductInventoryList = ProductInventoryMgr.getInventoryList(),
 		productItems : Collection = order.getAllProductLineItems(),

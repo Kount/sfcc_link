@@ -1,14 +1,10 @@
 <!--- TEMPLATENAME: iframe.isml --->
-<isscript>
-	importScript("int_kount:kount/LibKount.ds");
-	
-	var kount : Object = new KountObject();
-	
-	var sessionId : String = pdict.CurrentSession.sessionID.substr(0,24).replace('-','_','g') + pdict.Basket.getUUID().substr(0,8).replace('-','_','g');
-	session.custom['sessId'] = sessionId;
-	var merchantId : String = kount._getMercahntID();
-	var DC_url : String = kount._getDCUrl();
-</isscript>
+<isset name="kount" value="${require('~/cartridge/scripts/kount/LibKount')}" scope="page"/>
+
+<isset name="sessionId" value="${require('~/cartridge/scripts/kount/LibKount').getSessionIframe(pdict.CurrentSession.sessionID, pdict.Basket.getUUID())}" scope="page"/>
+<isset name="merchantId" value="${kount._getMercahntID()}" scope="page"/>
+<isset name="DC_url" value="${kount._getDCUrl()}" scope="page"/>
+
 <link rel="stylesheet" type="text/css" href="${URLUtils.staticURL('/css/k.css')}" />  
 
 <div <isif condition="${DC_url.indexOf('tst') != -1}">class="iframe_test"</isif> >

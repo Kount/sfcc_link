@@ -6,10 +6,9 @@
 *
 */
 importPackage( dw.system );
-importScript("int_kount:kount/LibKount.ds");
 
 function execute( args : PipelineDictionary ) : Number {
-   var kount : Object = new KountObject(),
+   var kount = require('~/cartridge/scripts/kount/LibKount'),
    	   IP : String = args.CurrentIP;
    if(!empty(IP)){
 	   args.status = kount.filterIP(IP);

@@ -488,7 +488,7 @@
         </transition-display>
       </simple-transition>
       <node>
-        <end-node name="error"/>
+        <end-node name="not_approved"/>
         <node-display x="1" y="1"/>
       </node>
     </segment>

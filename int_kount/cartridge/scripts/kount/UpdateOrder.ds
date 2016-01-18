@@ -3,15 +3,15 @@
 *
 *	@input orderId : String
 *	@input newStatus : String
-*	@input responseRIS : String
+*	@input responseRIS : Object
 *
 */
 importPackage( dw.order );
 importPackage( dw.system );
-importScript("int_kount:kount/LibKount.ds");
+
 
 function execute( args : PipelineDictionary ) : Number {
-	var kount : Object = new KountObject(),
+	var kount = require('~/cartridge/scripts/kount/LibKount'),
 		orderID : String = args.orderId,
 		order : Order = OrderMgr.getOrder(orderID);
 	if (!order) {
@@ -19,15 +19,16 @@ function execute( args : PipelineDictionary ) : Number {
 	}
 	
 	order.custom["kount_Status"] = args.newStatus;
+	
 	if (order.custom["kount_Status"] != args.newStatus) {
 		kount.writeExecutionError (new Error("KOUNT: UpdateOrder.ds: kount_Status custom field wasn't save"), "Update Orders", "error");
 		return PIPELET_ERROR;
 	}
 	
-	var response : String = args.responseRIS;
+	var response : Object = args.responseRIS;
 	if(!empty(response)){
 		try {
-			var params : Object = JSON.parse(response);
+			var params : Object = response;
 			if(!params.hasOwnProperty('ERRO')){
 				var elementList : Array = ['GEOX', 'NETW', 'SCOR', 'VELO', 'VMAX', 'TRAN', 'BROWSER', 'OS', 'IP_ORG', 'CARDS', 'DEVICES', 'COUNTRY', 'EMAILS', 'REASON_CODE' , 'REPLY'];
 				for(var i = 0; i < elementList.length; i++){
@@ -52,6 +53,5 @@ function execute( args : PipelineDictionary ) : Number {
 			return PIPELET_ERROR;
 		}
 	}
-	
 	return PIPELET_NEXT;
 }

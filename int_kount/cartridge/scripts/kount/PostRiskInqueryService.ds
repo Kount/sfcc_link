@@ -9,7 +9,7 @@
 * 	@input currentRequest : dw.system.Request
 *	@input cardNumber : String
 *   @output kountOrderStatus : String
-*	@output responseRIS : String
+*	@output responseRIS : Object
 *
 */
 importPackage( dw.system );
@@ -17,11 +17,10 @@ importPackage( dw.order );
 importPackage( dw.web );
 importPackage( dw.customer );
 importPackage( dw.util );
-importScript("int_kount:kount/LibKount.ds");
 
 function execute( args : PipelineDictionary ) : Number {
 
-	var kount : Object = new KountObject(),
+	var kount = require('~/cartridge/scripts/kount/LibKount'),
 		request : Request = args.currentRequest,
 		email : String = args.Email || Resource.msg('kount.noemail','kount',null),
 		IP : String = request.httpRemoteAddress,
@@ -43,7 +42,8 @@ function execute( args : PipelineDictionary ) : Number {
 		paymentTokenMap : Object = { BML: '', CREDIT_CARD: creditCard, GIFT_CERTIFICATE: payInstr.getGiftCertificateCode(), PayPal: "paypalPayerID" in payInstr.custom && !empty(payInstr.custom.paypalPayerID) ? payInstr.custom.paypalPayerID : "" },
 		paymentType = 'NONE',
 		paymentToken = null,
-		allProducts : Iterator = order.allProductLineItems.iterator(),
+		allProducts : Iterator = order.allProductLineItems.iterator(), 
+		getGiftCertificateLineItems : Iterator = order.getGiftCertificateLineItems().iterator(),
 		ProdDescVals : Array = [],
 		ProdItemVals : Array = [],
 		ProdPriceVals : Array = [],
@@ -58,6 +58,20 @@ function execute( args : PipelineDictionary ) : Number {
 		shippPhoneNumber : String = '',
 		shippState : String = '',
 		shippType : String ='';
+		
+	// GiftCert	
+	while (getGiftCertificateLineItems.hasNext()){
+		    var li : dw.order.LineItem = getGiftCertificateLineItems.next();
+			if(li.getPriceValue() != 0){
+				var prodType =  li.getLineItemText();
+				var	price = (li.getBasePrice().getValue()*100).toFixed();			
+				ProdDescVals.push(li.getLineItemText());
+				ProdItemVals.push(li.getUUID());  // use UUID
+				ProdPriceVals.push(price);
+				ProdQuantVals.push(1);
+				ProdTypeVals.push(prodType);		
+		}
+	}	
 	
 	while (allProducts.hasNext()){
 		var pli : ProductLineItem = allProducts.next();
@@ -74,8 +88,14 @@ function execute( args : PipelineDictionary ) : Number {
 
 	var payMethod = payInstr.getPaymentMethod();
 	if(payMethod in paymentTypeMap){
-		paymentType = paymentTypeMap[payMethod];
-		paymentToken = paymentTokenMap[payMethod];
+		//integration of PayPal Direct Payment
+		if (payMethod == "CREDIT_CARD" && payInstr.paymentTransaction.paymentProcessor.ID == "PAYPAL_PAYMENTSPRO" ){
+			paymentType = paymentTypeMap["CREDIT_CARD"] || paymentTypeMap["PayPal"] ;
+			paymentToken = paymentTokenMap["CREDIT_CARD"] ||  paymentTokenMap["PayPal"];
+		}else {
+			paymentType = paymentTypeMap[payMethod];
+			paymentToken = paymentTokenMap[payMethod];
+		};
 	}
 		
 	var shipments : Collection = order.getShipments(),
@@ -93,7 +113,13 @@ function execute( args : PipelineDictionary ) : Number {
 		shippPhoneNumber = shippAddr.getPhone();
 		shippState = shippAddr.getStateCode();
 		
-		var shippMethod = shipment.getShippingMethod().getDisplayName();
+		try {
+			var shippMethod = shipment.getShippingMethod().getDisplayName();
+		} catch (err){
+			kount.writeExecutionError(err, "PostRiskInqueryService.ds", "error");
+ 		}
+		
+		
 		if(shippMethod in shippingTypeMap){
 			shippType = shippingTypeMap[shippMethod];
 		}
@@ -150,7 +176,7 @@ function execute( args : PipelineDictionary ) : Number {
 	
 	try {
 		var response = kount.PostRISRequest(RequiredInquiryKeysVal);
-		if(response !== false){
+		if(!empty(response)){
 			args.kountOrderStatus = kount.evaluateRISResponse(response);
 			args.responseRIS = response;
 		} else {
