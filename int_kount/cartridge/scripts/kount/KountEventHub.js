@@ -43,7 +43,7 @@ var Hub = {
         Hub.proceedOrder(result, order);
     },
     'WORKFLOW_REEVALUATE': function(event) {
-       return Hub.sendRiskMail(AttrUpdater.update(event, 'SCOR', OrderMgr.getOrder(event.orderNo)).mailTo, event);
+        return Hub.sendRiskMail(AttrUpdater.update(event, 'SCOR', OrderMgr.getOrder(event.orderNo)).mailTo, event);
     },
     'WORKFLOW_NOTES_ADD': function (event) {
         return Hub.sendRiskMail(AttrUpdater.update(event, 'REASON_CODE', OrderMgr.getOrder(event.orderNo)).mailTo, event);
@@ -73,9 +73,9 @@ var Hub = {
         }
     },
     'failOrder': function(order) {
-    	Transaction.wrap(function() {
-    		return OrderMgr.failOrder(order);
-    	})
+        Transaction.wrap(function() {
+            return OrderMgr.failOrder(order);
+        })
     },
     'createGiftCertificates': function (order) {
         var gc;
