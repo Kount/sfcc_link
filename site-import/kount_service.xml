@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns="http://www.demandware.com/xml/impex/services/2014-09-26">
+    <service-credential service-credential-id="kount">
+        <url/>
+        <user-id/>
+        <password encrypted="true" encryption-type="common.export">f3p2/RQP16ZC5ohCRCDh9WX8uWvHgMhC2VPYb7SLaIE=</password>
+    </service-credential>
+
+    <service-profile service-profile-id="kount">
+        <timeout-millis>5000</timeout-millis>
+        <rate-limit-enabled>false</rate-limit-enabled>
+        <rate-limit-calls>0</rate-limit-calls>
+        <rate-limit-millis>0</rate-limit-millis>
+        <cb-enabled>false</cb-enabled>
+        <cb-calls>0</cb-calls>
+        <cb-millis>0</cb-millis>
+    </service-profile>
+
+    <service service-id="kount">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>kount_services</log-prefix>
+        <comm-log-enabled>true</comm-log-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>kount</profile-id>
+        <credential-id>kount</credential-id>
+    </service>
+
+</services>
