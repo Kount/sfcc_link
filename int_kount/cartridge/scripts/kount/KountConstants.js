@@ -1,6 +1,6 @@
 var Site = require('dw/system/Site').current;
 
-exports.DC_PRODUCTION_URL = 'https://kaptcha.com';
+exports.DC_PRODUCTION_URL = 'https://ssl.kaptcha.com';
 exports.DC_TEST_URL = 'https://tst.kaptcha.com';
 exports.RIS_TEST_URL = 'https://risk.test.kount.net';
 exports.RIS_PRODUCTION_URL = 'https://risk.kount.net';

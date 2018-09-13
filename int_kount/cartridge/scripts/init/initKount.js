@@ -1,7 +1,8 @@
 "use strict"
 
 // API
-var dwsvc =  require('dw/svc');
+//var dwsvc =  require('dw/svc');
+var LocalServiceRegistry = require('dw/svc/LocalServiceRegistry');
 
 // Tools
 var kount = require('~/cartridge/scripts/kount/LibKount');
@@ -9,7 +10,7 @@ var kount = require('~/cartridge/scripts/kount/LibKount');
 /**
  * @description creating of the ServiceDefinition object for the service
  */
-dwsvc.ServiceRegistry.configure("kount", {
+var kountService = LocalServiceRegistry.createService("kount", {
 	createRequest: function(svc, args){
 		var argsArray = [];
 
@@ -34,3 +35,5 @@ dwsvc.ServiceRegistry.configure("kount", {
     	return result;
     }
 });
+
+module.exports = kountService;

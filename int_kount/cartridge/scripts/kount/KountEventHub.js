@@ -17,14 +17,14 @@ var ProductInventory = require('./CheckProductInventory');
 var kount = require('~/cartridge/scripts/kount/LibKount');
 
 // Core APP
-//var controllersApp = kount._getCoreScript('app') || {getModel: function(){}};
+var controllersApp = kount._getCoreScript('app') || {getModel: function(){}};
 
 // Const
 var constants = require('./KountConstants');
 
 // Models
-// var EmailModel = controllersApp.getModel('Email');
-// var OrderModel = controllersApp.getModel('Order');
+var EmailModel = controllersApp.getModel('Email');
+var OrderModel = controllersApp.getModel('Order');
 
 /**
  * @description Hub for ENS events.
@@ -59,7 +59,7 @@ var Hub = {
         } else if(orderDetails.orderStatus == 'StatusAPPROVED') {
             ProductInventory.check(order, function (inventoryExist) {
                 if(inventoryExist) {
-                    Hub.createGiftCertificates(order);
+                    //Hub.createGiftCertificates(order);
                     Hub.sendMail(
                         "mail/orderconfirmation",
                         order.customerEmail,
