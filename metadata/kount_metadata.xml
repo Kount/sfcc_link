@@ -142,6 +142,34 @@
                 <min-length>0</min-length>
                 <field-length>0</field-length>
             </attribute-definition>
+			<attribute-definition attribute-id="kount_AVST">
+                <display-name xml:lang="x-default">Address Verification System Street</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_AVSZ">
+                <display-name xml:lang="x-default">Address Verification System Zip Code</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+			<attribute-definition attribute-id="kount_CVVR">
+                <display-name xml:lang="x-default">Card Verification Value</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+			<attribute-definition attribute-id="kount_KHash">
+                <display-name xml:lang="x-default">Kount KHash</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
             <attribute-group group-id="Kount">
@@ -162,6 +190,9 @@
                 <attribute attribute-id="kount_DEVICES"/>
                 <attribute attribute-id="kount_REPLY"/>
                 <attribute attribute-id="kount_REASON_CODE"/>
+				<attribute attribute-id="kount_AVST"/>
+                <attribute attribute-id="kount_AVSZ"/>
+                <attribute attribute-id="kount_CVVR"/>
             </attribute-group>
         </group-definitions>
     </type-extension>
@@ -308,6 +339,34 @@
                 <min-length>0</min-length>
                 <field-length>0</field-length>
             </attribute-definition>
+			<attribute-definition attribute-id="kount_AVST">
+                <display-name xml:lang="x-default">Address Verification System Street</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_AVSZ">
+                <display-name xml:lang="x-default">Address Verification System Zip Code</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+			<attribute-definition attribute-id="kount_CVVR">
+                <display-name xml:lang="x-default">Card Verification Value</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+			<attribute-definition attribute-id="kount_KHash">
+                <display-name xml:lang="x-default">Kount KHash</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
             <attribute-group group-id="Kount">
@@ -331,6 +390,18 @@
             </attribute-group>
         </group-definitions>
     </type-extension>
+	
+	<type-extension type-id="CustomerPaymentInstrument">
+		<custom-attribute-definitions>
+			<attribute-definition attribute-id="kount_KHash">
+                <display-name xml:lang="x-default">Kount KHash</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+		</custom-attribute-definitions>
+	</type-extension>
 
     <type-extension type-id="SitePreferences">
         <custom-attribute-definitions>
@@ -511,6 +582,22 @@
                 <min-length>1</min-length>
                 <field-length>8</field-length>
             </attribute-definition>
+			<attribute-definition attribute-id="kount_ExampleVerificationsEnabled">
+                <display-name xml:lang="x-default">Enable Example Verifications</display-name>
+                <description xml:lang="x-default">Option will add fields on order summary page to simulate address verification and card verification, for testing purpose.</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+			<attribute-definition attribute-id="kount_HashSaltKey">
+                <display-name xml:lang="x-default">Hash Salt Key</display-name>
+                <description xml:lang="x-default">Salt Key used for hashing credit card number</description>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
             <attribute-group group-id="Kount">
@@ -533,6 +620,8 @@
                 <attribute attribute-id="kount_IsEnabled"/>
                 <attribute attribute-id="kount_MODE"/>
                 <attribute attribute-id="kount_CORE"/>
+				<attribute attribute-id="kount_ExampleVerificationsEnabled"/>
+				<attribute attribute-id="kount_HashSaltKey"/>
             </attribute-group>
         </group-definitions>
     </type-extension>

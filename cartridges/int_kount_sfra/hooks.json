@@ -1,0 +1,5 @@
+{
+	"hooks": [
+		{"name": "dw.system.request.onSession", "script": "./cartridge/scripts/kount/hooks.js"}
+	]
+}
