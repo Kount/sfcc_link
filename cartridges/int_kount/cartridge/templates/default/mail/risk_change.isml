@@ -1,7 +1,7 @@
 <iscontent type="text/html " charset="UTF-8"/>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <iscomment>The "subject" tag contains the mail subject and can contain dynamic information, like the order number.</iscomment>
-<subject><isprint value="${pdict.EventData.name}" encoding="off"/></subject>
+<subject><isprint value="${pdict.EventData.name}" encoding="on"/></subject>
 
 <iscomment>
 	The "to" tag contains the email address of the recipient, the "from" tag the email address of the sender. 
