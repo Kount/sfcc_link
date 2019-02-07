@@ -115,6 +115,8 @@ server.replace(
                 var array = require('*/cartridge/scripts/util/array');
                 var Locale = require('dw/util/Locale');
                 var basketCalculationHelpers = require('*/cartridge/scripts/helpers/basketCalculationHelpers');
+                var hooksHelper = require('*/cartridge/scripts/helpers/hooks');
+
                 var currentBasket = BasketMgr.getCurrentBasket();
                 var billingData = res.getViewData();
 
@@ -311,6 +313,8 @@ server.replace(
                     usingMultiShipping = false;
                 }
 
+                hooksHelper('app.customer.subscription', 'subscribeTo', [paymentForm.subscribe.checked, paymentForm.creditCardFields.email.htmlValue], function () {});
+
                 var currentLocale = Locale.getLocale(req.locale.id);
 
                 var basketModel = new OrderModel(
@@ -341,12 +345,12 @@ server.replace(
 
 server.replace('PlaceOrder', server.middleware.https, function (req, res, next) {
     var BasketMgr = require('dw/order/BasketMgr');
-    var HookMgr = require('dw/system/HookMgr');
     var OrderMgr = require('dw/order/OrderMgr');
     var Resource = require('dw/web/Resource');
     var Transaction = require('dw/system/Transaction');
     var URLUtils = require('dw/web/URLUtils');
     var basketCalculationHelpers = require('*/cartridge/scripts/helpers/basketCalculationHelpers');
+    var hooksHelper = require('*/cartridge/scripts/helpers/hooks');
 
     var currentBasket = BasketMgr.getCurrentBasket();
 
@@ -372,11 +376,7 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
         return next();
     }
 
-    var validationOrderStatus = HookMgr.callHook(
-        'app.validate.order',
-        'validateOrder',
-        currentBasket
-    );
+    var validationOrderStatus = hooksHelper('app.validate.order', 'validateOrder', currentBasket, require('*/cartridge/scripts/hooks/validateOrder').validateOrder);
     if (validationOrderStatus.error) {
         res.json({
             error: true,
@@ -460,7 +460,7 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
         return next();
     }
 
-    var fraudDetectionStatus = HookMgr.callHook('app.fraud.detection', 'fraudDetection', currentBasket);
+    var fraudDetectionStatus = hooksHelper('app.fraud.detection', 'fraudDetection', currentBasket, require('*/cartridge/scripts/hooks/fraudDetection').fraudDetection);
     if (fraudDetectionStatus.status === 'fail') {
         Transaction.wrap(function () { OrderMgr.failOrder(order); });
 
