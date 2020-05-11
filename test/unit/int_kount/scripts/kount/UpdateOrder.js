@@ -56,7 +56,7 @@ describe('UpdateOrder', function () {
             'dw/web/URLUtils': urlUtilsMock,
             'dw/system/Transaction': TransactionMock,
             'dw/web/Resource': ResourceMock,
-            '~/cartridge/scripts/kount/LibKount': libKountMock
+            '*/cartridge/scripts/kount/LibKount': libKountMock
         });
         UpdateOrder.__proto__.empty = emptyFuncMock; // eslint-disable-line
         orderMock = getOrderMock();

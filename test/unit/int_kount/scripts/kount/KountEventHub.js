@@ -214,7 +214,7 @@ function getKountEventHub(isSFRA, inventoryExist) {
         './UpdateCustomAttribute': UpdateCustomAttributeMock,
         './UpdateOrderStatus': UpdateOrderStatusMock,
         './CheckProductInventory': inventoryExist ? CheckProductInventoryMock : CheckProductInventoryErrorMock,
-        '~/cartridge/scripts/kount/LibKount': isSFRA ? libKountMockSFRA : libKountMock,
+        '*/cartridge/scripts/kount/LibKount': isSFRA ? libKountMockSFRA : libKountMock,
         '*/cartridge/scripts/checkout/checkoutHelpers': COHelpersMock,
         'int_kount_sfra/cartridge/scripts/kount/EmailHelper': EmailHelperMock,
         './KountConstants': {

@@ -51,7 +51,7 @@ describe('UpdateCustomAttribute', function () {
         UpdateCustomAttribute = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/UpdateCustomAttribute', {
             'dw/web/URLUtils': urlUtilsMock,
             'dw/system/Transaction': TransactionMock,
-            '~/cartridge/scripts/kount/LibKount': libKountMock
+            '*/cartridge/scripts/kount/LibKount': libKountMock
         });
         orderMock.custom.kount_Status = 'HOLD';
         eventDataMock.newValue = 'A';

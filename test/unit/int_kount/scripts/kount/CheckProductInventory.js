@@ -73,7 +73,7 @@ describe('CheckProductInventory', function () {
     before(function () {
         CheckProductInventory = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/CheckProductInventory', {
             'dw/catalog/ProductInventoryMgr': ProductInventoryMgrMock,
-            '~/cartridge/scripts/kount/LibKount': kountMock
+            '*/cartridge/scripts/kount/LibKount': kountMock
         });
         CheckProductInventory.__proto__.empty = emptyFuncMock; // eslint-disable-line
     });

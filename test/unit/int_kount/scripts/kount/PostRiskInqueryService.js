@@ -292,8 +292,8 @@ describe('PostRiskInqueryService', function () {
             },
             'dw/crypto/Encoding': EncodingMock,
             './KountConstants': constantsMock,
-            '~/cartridge/scripts/kount/LibKount': libKountMock,
-            '~/cartridge/scripts/kount/KHash': {
+            '*/cartridge/scripts/kount/LibKount': libKountMock,
+            '*/cartridge/scripts/kount/KHash': {
                 hashGiftCard: function (data) {
                     return data;
                 }

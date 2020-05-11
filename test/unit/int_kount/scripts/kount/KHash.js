@@ -26,8 +26,8 @@ describe('KHash', function () {
     beforeEach(function () {
         KHash = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/KHash', {
             './KountConstants': constantsMock,
-            '~/cartridge/scripts/kount/Base85': base85Mock,
-            '~/cartridge/scripts/kount/SHA1': sha1Mock
+            '*/cartridge/scripts/kount/Base85': base85Mock,
+            '*/cartridge/scripts/kount/SHA1': sha1Mock
         });
     });
 
