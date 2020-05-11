@@ -1,158 +1,158 @@
-function utf8_encode ( str_data ) {	// Encodes an ISO-8859-1 string to UTF-8
-	// 
+/* eslint-disable no-mixed-operators */
 
-	str_data = str_data.replace(/\r\n/g,"\n");
-	var utftext = "";
+'use strict';
 
-	for (var n = 0; n < str_data.length; n++) {
-		var c = str_data.charCodeAt(n);
-		if (c < 128) {
-			utftext += String.fromCharCode(c);
-		} else if((c > 127) && (c < 2048)) {
-			utftext += String.fromCharCode((c >> 6) | 192);
-			utftext += String.fromCharCode((c & 63) | 128);
-		} else {
-			utftext += String.fromCharCode((c >> 12) | 224);
-			utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-			utftext += String.fromCharCode((c & 63) | 128);
-		}
-	}
+/**
+ * @description Encodes string data
+ * @param {string} stringData - string data to be encoded
+ * @return {string} - returns encoded string
+ */
+function utf8Encode(stringData) { // Encodes an ISO-8859-1 string to UTF-8
+    var strData = stringData.replace(/\r\n/g, '\n');
+    var utftext = '';
 
-	return utftext;
+    for (var n = 0; n < strData.length; n++) {
+        var c = strData.charCodeAt(n);
+        if (c < 128) {
+            utftext += String.fromCharCode(c);
+        } else if ((c > 127) && (c < 2048)) {
+            utftext += String.fromCharCode((c >> 6) | 192);
+            utftext += String.fromCharCode((c & 63) | 128);
+        } else {
+            utftext += String.fromCharCode((c >> 12) | 224);
+            utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+            utftext += String.fromCharCode((c & 63) | 128);
+        }
+    }
+
+    return utftext;
 }
 
+var encode = function (str) {	// Calculate the sha1 hash of a string
+    var rotateLeft = function (n, s) {
+        var t4 = (n << s) | (n >>> (32 - s));
+        return t4;
+    };
 
-var encode = function( str ) {	// Calculate the sha1 hash of a string
+    var cvtHex = function (val) {
+        // eslint-disable-next-line no-shadow
+        var str = '';
+        var i;
+        var v;
 
-	var rotate_left = function(n,s) {
-			var t4 = ( n<<s ) | (n>>>(32-s));
-			return t4;
-		};
+        for (i = 7; i >= 0; i--) {
+            v = (val >>> (i * 4)) & 0x0f;
+            str += v.toString(16);
+        }
+        return str;
+    };
 
-	var lsb_hex = function(val) {
-			var str="";
-			var i;
-			var vh;
-			var vl;
+    var blockstart;
+    var i;
+    var j;
+    var W = new Array(80);
+    var H0 = 0x67452301;
+    var H1 = 0xEFCDAB89;
+    var H2 = 0x98BADCFE;
+    var H3 = 0x10325476;
+    var H4 = 0xC3D2E1F0;
+    var A;
+    var B;
+    var C;
+    var D;
+    var E;
+    var temp;
 
-			for( i=0; i<=6; i+=2 ) {
-				vh = (val>>>(i*4+4))&0x0f;
-				vl = (val>>>(i*4))&0x0f;
-				str += vh.toString(16) + vl.toString(16);
-			}
-			return str;
-		};
+    // eslint-disable-next-line no-param-reassign
+    str = utf8Encode(str);
+    var strLen = str.length;
 
-	var cvt_hex = function(val) {
-			var str="";
-			var i;
-			var v;
+    // eslint-disable-next-line no-array-constructor
+    var wordArray = new Array();
+    for (i = 0; i < strLen - 3; i += 4) {
+        j = str.charCodeAt(i) << 24 | str.charCodeAt(i + 1) << 16 |
+		str.charCodeAt(i + 2) << 8 | str.charCodeAt(i + 3);
+        wordArray.push(j);
+    }
 
-			for( i=7; i>=0; i-- ) {
-				v = (val>>>(i*4))&0x0f;
-				str += v.toString(16);
-			}
-			return str;
-		};
+    // eslint-disable-next-line default-case
+    switch (strLen % 4) {
+        case 0:
+            i = 0x080000000;
+            break;
+        case 1:
+            i = str.charCodeAt(strLen - 1) << 24 | 0x0800000;
+            break;
+        case 2:
+            i = str.charCodeAt(strLen - 2) << 24 | str.charCodeAt(strLen - 1) << 16 | 0x08000;
+            break;
+        case 3:
+            i = str.charCodeAt(strLen - 3) << 24 | str.charCodeAt(strLen - 2) << 16 | str.charCodeAt(strLen - 1) << 8	| 0x80;
+            break;
+    }
 
-	var blockstart;
-	var i, j;
-	var W = new Array(80);
-	var H0 = 0x67452301;
-	var H1 = 0xEFCDAB89;
-	var H2 = 0x98BADCFE;
-	var H3 = 0x10325476;
-	var H4 = 0xC3D2E1F0;
-	var A, B, C, D, E;
-	var temp;
+    wordArray.push(i);
 
-	str = utf8_encode(str);
-	var str_len = str.length;
+    while ((wordArray.length % 16) !== 14) wordArray.push(0);
 
-	var word_array = new Array();
-	for( i=0; i<str_len-3; i+=4 ) {
-		j = str.charCodeAt(i)<<24 | str.charCodeAt(i+1)<<16 |
-		str.charCodeAt(i+2)<<8 | str.charCodeAt(i+3);
-		word_array.push( j );
-	}
+    wordArray.push(strLen >>> 29);
+    wordArray.push((strLen << 3) & 0x0ffffffff);
 
-	switch( str_len % 4 ) {
-		case 0:
-			i = 0x080000000;
-		break;
-		case 1:
-			i = str.charCodeAt(str_len-1)<<24 | 0x0800000;
-		break;
-		case 2:
-			i = str.charCodeAt(str_len-2)<<24 | str.charCodeAt(str_len-1)<<16 | 0x08000;
-		break;
-		case 3:
-			i = str.charCodeAt(str_len-3)<<24 | str.charCodeAt(str_len-2)<<16 | str.charCodeAt(str_len-1)<<8	| 0x80;
-		break;
-	}
+    for (blockstart = 0; blockstart < wordArray.length; blockstart += 16) {
+        for (i = 0; i < 16; i++) W[i] = wordArray[blockstart + i];
+        for (i = 16; i <= 79; i++) W[i] = rotateLeft(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16], 1);
 
-	word_array.push( i );
+        A = H0;
+        B = H1;
+        C = H2;
+        D = H3;
+        E = H4;
 
-	while( (word_array.length % 16) != 14 ) word_array.push( 0 );
+        for (i = 0; i <= 19; i++) {
+            temp = (rotateLeft(A, 5) + ((B & C) | (~B & D)) + E + W[i] + 0x5A827999) & 0x0ffffffff;
+            E = D;
+            D = C;
+            C = rotateLeft(B, 30);
+            B = A;
+            A = temp;
+        }
 
-	word_array.push( str_len>>>29 );
-	word_array.push( (str_len<<3)&0x0ffffffff );
+        for (i = 20; i <= 39; i++) {
+            temp = (rotateLeft(A, 5) + (B ^ C ^ D) + E + W[i] + 0x6ED9EBA1) & 0x0ffffffff;
+            E = D;
+            D = C;
+            C = rotateLeft(B, 30);
+            B = A;
+            A = temp;
+        }
 
-	for ( blockstart=0; blockstart<word_array.length; blockstart+=16 ) {
-		for( i=0; i<16; i++ ) W[i] = word_array[blockstart+i];
-		for( i=16; i<=79; i++ ) W[i] = rotate_left(W[i-3] ^ W[i-8] ^ W[i-14] ^ W[i-16], 1);
+        for (i = 40; i <= 59; i++) {
+            temp = (rotateLeft(A, 5) + ((B & C) | (B & D) | (C & D)) + E + W[i] + 0x8F1BBCDC) & 0x0ffffffff;
+            E = D;
+            D = C;
+            C = rotateLeft(B, 30);
+            B = A;
+            A = temp;
+        }
 
-		A = H0;
-		B = H1;
-		C = H2;
-		D = H3;
-		E = H4;
+        for (i = 60; i <= 79; i++) {
+            temp = (rotateLeft(A, 5) + (B ^ C ^ D) + E + W[i] + 0xCA62C1D6) & 0x0ffffffff;
+            E = D;
+            D = C;
+            C = rotateLeft(B, 30);
+            B = A;
+            A = temp;
+        }
 
-		for( i= 0; i<=19; i++ ) {
-			temp = (rotate_left(A,5) + ((B&C) | (~B&D)) + E + W[i] + 0x5A827999) & 0x0ffffffff;
-			E = D;
-			D = C;
-			C = rotate_left(B,30);
-			B = A;
-			A = temp;
-		}
+        H0 = (H0 + A) & 0x0ffffffff;
+        H1 = (H1 + B) & 0x0ffffffff;
+        H2 = (H2 + C) & 0x0ffffffff;
+        H3 = (H3 + D) & 0x0ffffffff;
+        H4 = (H4 + E) & 0x0ffffffff;
+    }
 
-		for( i=20; i<=39; i++ ) {
-			temp = (rotate_left(A,5) + (B ^ C ^ D) + E + W[i] + 0x6ED9EBA1) & 0x0ffffffff;
-			E = D;
-			D = C;
-			C = rotate_left(B,30);
-			B = A;
-			A = temp;
-		}
-
-		for( i=40; i<=59; i++ ) {
-			temp = (rotate_left(A,5) + ((B&C) | (B&D) | (C&D)) + E + W[i] + 0x8F1BBCDC) & 0x0ffffffff;
-			E = D;
-			D = C;
-			C = rotate_left(B,30);
-			B = A;
-			A = temp;
-		}
-
-		for( i=60; i<=79; i++ ) {
-			temp = (rotate_left(A,5) + (B ^ C ^ D) + E + W[i] + 0xCA62C1D6) & 0x0ffffffff;
-			E = D;
-			D = C;
-			C = rotate_left(B,30);
-			B = A;
-			A = temp;
-		}
-
-		H0 = (H0 + A) & 0x0ffffffff;
-		H1 = (H1 + B) & 0x0ffffffff;
-		H2 = (H2 + C) & 0x0ffffffff;
-		H3 = (H3 + D) & 0x0ffffffff;
-		H4 = (H4 + E) & 0x0ffffffff;
-	}
-
-	var temp = cvt_hex(H0) + cvt_hex(H1) + cvt_hex(H2) + cvt_hex(H3) + cvt_hex(H4);
-	return temp.toLowerCase();
-}
+    temp = cvtHex(H0) + cvtHex(H1) + cvtHex(H2) + cvtHex(H3) + cvtHex(H4);
+    return temp.toLowerCase();
+};
 
 exports.encode = encode;

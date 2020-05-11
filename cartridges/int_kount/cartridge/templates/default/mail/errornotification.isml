@@ -15,7 +15,6 @@
 </to>
 <head>
 
-<isinclude template="util/modules"/>
 </head>
 <body>  
 	<p>Site Name - <isprint value="${pdict.SiteName}" encoding="on"/></p>

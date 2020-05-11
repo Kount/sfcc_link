@@ -42,6 +42,12 @@
                 <min-length>0</min-length>
                 <field-length>0</field-length>
             </attribute-definition>
+            <attribute-definition attribute-id="kount_ENSF">
+                <display-name xml:lang="x-default">Kount ENS Flagged</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+            </attribute-definition>
             <attribute-definition attribute-id="kount_GEOX">
                 <display-name xml:lang="x-default">Kount Order GEOX</display-name>
                 <type>string</type>
@@ -99,6 +105,10 @@
                     <value-definition>
                         <display xml:lang="x-default">Declined</display>
                         <value>DECLINED</value>
+                    </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Retry</display>
+                        <value>RETRY</value>
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
@@ -170,6 +180,19 @@
                 <externally-managed-flag>true</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
+            <attribute-definition attribute-id="kount_SessionId">
+                <display-name xml:lang="x-default">Kount session id</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_Retries">
+                <display-name xml:lang="x-default">Kount Retries</display-name>
+                <type>int</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
+            </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
             <attribute-group group-id="Kount">
@@ -193,6 +216,8 @@
 				<attribute attribute-id="kount_AVST"/>
                 <attribute attribute-id="kount_AVSZ"/>
                 <attribute attribute-id="kount_CVVR"/>
+                <attribute attribute-id="kount_ENSF"/>
+                <attribute attribute-id="kount_Retries"/>
             </attribute-group>
         </group-definitions>
     </type-extension>
@@ -297,6 +322,10 @@
                         <display xml:lang="x-default">Declined</display>
                         <value>DECLINED</value>
                     </value-definition>
+                    <value-definition>
+                        <display xml:lang="x-default">Retry</display>
+                        <value>RETRY</value>
+                    </value-definition>
                 </value-definitions>
             </attribute-definition>
             <attribute-definition attribute-id="kount_TRAN">
@@ -365,6 +394,13 @@
                 <type>string</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_SessionId">
+                <display-name xml:lang="x-default">Kount session id</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>true</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
         </custom-attribute-definitions>
@@ -465,6 +501,13 @@
             <attribute-definition attribute-id="kount_IsEnabled">
                 <display-name xml:lang="x-default">Enable Kount</display-name>
                 <description xml:lang="x-default">Enable/Disable Kount</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_isSFRA">
+                <display-name xml:lang="x-default">SFRA Site</display-name>
                 <type>boolean</type>
                 <mandatory-flag>false</mandatory-flag>
                 <externally-managed-flag>false</externally-managed-flag>
@@ -582,6 +625,13 @@
                 <min-length>1</min-length>
                 <field-length>8</field-length>
             </attribute-definition>
+            <attribute-definition attribute-id="kount_isSFRA">
+                <display-name xml:lang="x-default">Using SFRA?</display-name>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>true</default-value>
+            </attribute-definition>
 			<attribute-definition attribute-id="kount_ExampleVerificationsEnabled">
                 <display-name xml:lang="x-default">Enable Example Verifications</display-name>
                 <description xml:lang="x-default">Option will add fields on order summary page to simulate address verification and card verification, for testing purpose.</description>
@@ -598,6 +648,19 @@
                 <externally-managed-flag>false</externally-managed-flag>
                 <min-length>0</min-length>
             </attribute-definition>
+            <attribute-definition attribute-id="kount_IP_RANGE">
+                <display-name xml:lang="x-default">Webhook IP Whitelist (CIDR)</display-name>
+                <type>string</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <min-length>0</min-length>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount_OrderMaxRetries">
+                <display-name xml:lang="x-default">Order Max Retries</display-name>
+                <type>int</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
         </custom-attribute-definitions>
         <group-definitions>
             <attribute-group group-id="Kount">
@@ -605,6 +668,7 @@
                 <attribute attribute-id="kount_APIKey"/>
                 <attribute attribute-id="kount_AUTH_TYPE"/>
                 <attribute attribute-id="kount_ENS"/>
+                <attribute attribute-id="kount_IP_RANGE"/>
                 <attribute attribute-id="kount_EmailList"/>
                 <attribute attribute-id="kount_IPFilter"/>
                 <attribute attribute-id="kount_WebsiteId"/>
@@ -618,11 +682,41 @@
                 <attribute attribute-id="kount_RISK_CHANGE_REPLY"/>
                 <attribute attribute-id="kount_UDF"/>
                 <attribute attribute-id="kount_IsEnabled"/>
+                <attribute attribute-id="kount_isSFRA"/>
                 <attribute attribute-id="kount_MODE"/>
                 <attribute attribute-id="kount_CORE"/>
 				<attribute attribute-id="kount_ExampleVerificationsEnabled"/>
 				<attribute attribute-id="kount_HashSaltKey"/>
+                <attribute attribute-id="kount_isSFRA"/>
+                <attribute attribute-id="kount_OrderMaxRetries"/>
             </attribute-group>
         </group-definitions>
     </type-extension>
+    <custom-type type-id="KountENSQueue">
+        <display-name xml:lang="x-default">Kount ENS Queue</display-name>
+        <staging-mode>no-staging</staging-mode>
+        <storage-scope>site</storage-scope>
+        <key-definition attribute-id="ID">
+            <type>string</type>
+            <min-length>0</min-length>
+        </key-definition>
+        <attribute-definitions>
+            <attribute-definition attribute-id="ensResponseBody">
+                <display-name xml:lang="x-default">ENS Response Body</display-name>
+                <type>text</type>
+                <localizable-flag>false</localizable-flag>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+        </attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="custom">
+                <display-name xml:lang="x-default">Custom</display-name>
+                <attribute attribute-id="creationDate" system="true"/>
+                <attribute attribute-id="lastModified" system="true"/>
+                <attribute attribute-id="ensResponseBody"/>
+                <attribute attribute-id="ID"/>
+            </attribute-group>
+        </group-definitions>
+    </custom-type>
 </metadata>

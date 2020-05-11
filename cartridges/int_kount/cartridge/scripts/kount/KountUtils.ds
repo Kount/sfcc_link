@@ -21,11 +21,11 @@ module.exports = {
 				name: itemXML.name.toString(),
 				attributeName: paramName[paramName.length-1], // name custom attribute which will be updated
 				transactionID: itemXML.key.toString(),
-				orderNo: itemXML.key.@order_number.toString() || '',
-				site: itemXML.key.@site.toString() || '',
+				orderNo: itemXML.key['@order_number'].toString() || '',
+				site: itemXML.key['@site'].toString() || '',
 				oldValue: itemXML.old_value.toString(),
 				newValue: itemXML.new_value.toString(),
-				reasonCode: itemXML.new_value.@reason_code.toString(),
+				reasonCode: itemXML.new_value['@reason_code'].toString(),
 				date: itemXML.occurred.toString()
 			};
 			eventDataMap.add1(eventData);

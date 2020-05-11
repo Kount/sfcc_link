@@ -1,38 +1,38 @@
-"use strict"
+'use strict';
 
-// API
-//var dwsvc =  require('dw/svc');
 var LocalServiceRegistry = require('dw/svc/LocalServiceRegistry');
-
-// Tools
-var kount = require('~/cartridge/scripts/kount/LibKount');
 
 /**
  * @description creating of the ServiceDefinition object for the service
  */
-var kountService = LocalServiceRegistry.createService("kount", {
-	createRequest: function(svc, args){
-		var argsArray = [];
+var kountService = LocalServiceRegistry.createService('kount', {
+    createRequest: function (svc, args) {
+        var argsArray = [];
+        var keys = Object.keys(args);
 
-	    for (var key in args) {
-	    	argsArray.push(key + "=" + args[key]);
-	    }
+        for (var i = 0; i < keys.length; i++) {
+            var key = keys[i];
+            argsArray.push(key + '=' + args[key]);
+        }
 
-		svc.setRequestMethod("POST");
-		svc.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        svc.setRequestMethod('POST');
+        svc.addHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-		return argsArray.join("&");
+        return argsArray.join('&');
     },
-    parseResponse: function(svc, client) {
-    	var result = {};
+    parseResponse: function (svc, client) {
+        var kount = require('*/cartridge/scripts/kount/LibKount');
+        var result;
 
-    	try { 
-    		result = JSON.parse(client.text);
-    	} catch(error) {
-    		kount.plainTextHandler(client.text);
-    	}
-
-    	return result;
+        try {
+            result = JSON.parse(client.text);
+            return result;
+        } catch (error) {
+            kount.plainTextHandler(client.text);
+            return {
+                errorMessage: 'Kount call failed.'
+            };
+        }
     }
 });
 
