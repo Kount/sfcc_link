@@ -8,7 +8,7 @@
 	Each tag is to be specified max. once. Multiple email address can be separated by "," (see RFC2822).
 </iscomment>
 <to>${pdict.MailTo}</to>
-<from>noreply@demandware.net</from>
+<from>noreply@commercecloud.salesforce.com</from>
 
 <head>
 

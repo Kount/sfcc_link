@@ -1,10 +1,12 @@
 'use strict';
 
 var Mail = require('dw/net/Mail');
-var URLUtils = require('dw/web/URLUtils');
 var HashMap = require('dw/util/HashMap');
 var Template = require('dw/util/Template');
 
+/**
+ * @param {Object} args - pdict of the execution
+ */
 function sendEmail(args) {
     var mail = new Mail();
     var context = new HashMap();
@@ -16,7 +18,7 @@ function sendEmail(args) {
     mail.setFrom(args.from);
 
     var templateData = args.data;
-    
+
     Object.keys(templateData).forEach(function (key) {
         context.put(key, templateData[key]);
     });

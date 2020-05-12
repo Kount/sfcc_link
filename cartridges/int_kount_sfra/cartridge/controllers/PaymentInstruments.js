@@ -3,8 +3,6 @@
 var server = require('server');
 
 var csrfProtection = require('*/cartridge/scripts/middleware/csrf');
-var userLoggedIn = require('*/cartridge/scripts/middleware/userLoggedIn');
-var consentTracking = require('*/cartridge/scripts/middleware/consentTracking');
 var page = module.superModule;
 server.extend(page);
 
@@ -82,21 +80,6 @@ function getDetailsObject(paymentForm) {
     };
 }
 
-/**
- * Creates a list of expiration years from the current year
- * @returns {List} a plain list of expiration years from current year
- */
-function getExpirationYears() {
-    var currentYear = new Date().getFullYear();
-    var creditCardExpirationYears = [];
-
-    for (var i = 0; i < 10; i++) {
-        creditCardExpirationYears.push((currentYear + i).toString());
-    }
-
-    return creditCardExpirationYears;
-}
-
 server.replace('SavePayment', csrfProtection.validateAjaxRequest, function (req, res, next) {
     var formErrors = require('*/cartridge/scripts/formErrors');
     var HookMgr = require('dw/system/HookMgr');
@@ -130,8 +113,7 @@ server.replace('SavePayment', csrfProtection.validateAjaxRequest, function (req,
 
                 var processor = PaymentMgr.getPaymentMethod(dwOrderPaymentInstrument.METHOD_CREDIT_CARD).getPaymentProcessor();
                 paymentInstrument.custom.kount_KHash = KHash.hashPaymentToken(formInfo.cardNumber);
-                
-                var processor = PaymentMgr.getPaymentMethod(dwOrderPaymentInstrument.METHOD_CREDIT_CARD).getPaymentProcessor();
+
                 var token = HookMgr.callHook(
                     'app.payment.processor.' + processor.ID.toLowerCase(),
                     'createMockToken'

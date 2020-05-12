@@ -30,13 +30,13 @@ var responseArgs = {
  * @returns Object {{KountOrderStatus: string, responseRIS: string}}
  */
 function init(args) {
-	var kount = require('~/cartridge/scripts/kount/LibKount');
-	var KHash = require('~/cartridge/scripts/kount/KHash');
+	var kount = require('*/cartridge/scripts/kount/LibKount');
+	var KHash = require('*/cartridge/scripts/kount/KHash');
 	var	request = args.CurrentRequest;
-	var	email = args.Email || Resource.msg('kount.noemail','kount',null);
-	var	IP = request.httpRemoteAddress;
-	var	sessID = args.SessionID;
-	var	orderID = args.OrderID;
+	var	email = args.Email || Resource.msg('kount.noemail','kount','noemail@kount.com');
+	var	IP = request.httpRemoteAddress || '10.0.0.1';
+	var	sessID = args.SessionID || kount.getSessionIframe(session, args.Order.getUUID());
+	var	orderID = args.OrderID || null;
 	var	order = args.Order;
 	var	totalPrice = (order.getTotalGrossPrice().getValue()*100).toFixed();
 	var	customer = order.getCustomer();
@@ -45,6 +45,7 @@ function init(args) {
 	var	customerID = !empty(profile) ? profile.getCustomerNo() : '';
 	var	customerName = !empty(profile) ? profile.getFirstName()+' '+profile.getSecondName()+' '+profile.getLastName() : billingAddr.getFullName();
 	var	customerEmail= !empty(profile) ? profile.getEmail() : email;
+	var customerCreateDate = !empty(profile) ? Math.floor(profile.creationDate.valueOf()/1000) : Math.floor((new Date()).valueOf()/1000);
 	var	shippingTypeMap = { Foreign : 'SD', Overnight : 'ND', '2-Day Express' : '2D', Ground  : 'ST', Express : '2D', USPS : 'ST', 'Super Saver' : 'ST' };
 	var	payInstrColl = order.getPaymentInstruments();
 	var	payInstr = kount.getPayment(payInstrColl);
@@ -85,7 +86,7 @@ function init(args) {
 				ProdItemVals.push(li.getUUID());  // use UUID
 				ProdPriceVals.push(price);
 				ProdQuantVals.push(1);
-				ProdTypeVals.push(prodType);
+				ProdTypeVals.push(prodType || 'Not Available');
 		}
 	}	
 	
@@ -99,7 +100,7 @@ function init(args) {
 			ProdItemVals.push(pli.getProductID());
 			ProdPriceVals.push(price);
 			ProdQuantVals.push(pli.getQuantityValue());
-			ProdTypeVals.push(prodType);		
+			ProdTypeVals.push(prodType || 'Not Available');		
 		}
 	}
 
@@ -140,7 +141,7 @@ function init(args) {
 		// needed for GC purchase, because GC checkout doesn't have ShippingAddress Object
 		shippStreet1 = shippAddr ? shippAddr.getAddress1() : '';
 		shippStreet2 = shippAddr ? shippAddr.getAddress2() : '';
-		shippCountry = shippAddr ? shippAddr.getCountryCode().getValue() : '';
+		shippCountry = shippAddr && shippAddr.getCountryCode() ? shippAddr.getCountryCode().getValue() : '';
 		shippCity = shippAddr ? shippAddr.getCity() : '';
 		shippName = shippAddr ? shippAddr.getFullName() : '';
 		shippPostalCode = shippAddr ? shippAddr.getPostalCode() : '';
@@ -159,32 +160,24 @@ function init(args) {
 		}
 	}	
 	var RequiredInquiryKeysVal;
-	if (constants.RISK_WORKFLOW_TYPE == constants.RISK_WORKFLOW_TYPE_PRE && orderID) {
+	if (constants.RISK_WORKFLOW_TYPE == constants.RISK_WORKFLOW_TYPE_PRE && orderID && args.Order.custom.kount_Status.value != 'RETRY') {
 		RequiredInquiryKeysVal = {
 			AUTH : Resource.msg('kount.AUTH','kount',null),
-			AVST : order.custom.kount_AVST || 'X',
-			AVSZ : order.custom.kount_AVSZ || 'X',
-			CVVR : order.custom.kount_CVVR || 'X',
-			FRMT : Resource.msg('kount.FRMT','kount',null),
-			MACK : Resource.msg('kount.MACK','kount',null),
-			MERC : kount._getMercahntID(),
-			MODE : Resource.msg('kount.MODE_UPDATE','kount',null),
-			PTOK : paymentToken,
+			AVST : constants.ALLOWED_VERIFICATION_VALUES.indexOf(order.custom.kount_AVST) > -1 ? order.custom.kount_AVST : 'X',
+			AVSZ : constants.ALLOWED_VERIFICATION_VALUES.indexOf(order.custom.kount_AVSZ) > -1 ? order.custom.kount_AVSZ : 'X',
+			CVVR : constants.ALLOWED_VERIFICATION_VALUES.indexOf(order.custom.kount_CVVR) > -1 ? order.custom.kount_CVVR : 'X',
+			FRMT : Resource.msg('kount.FRMT','kount','JSON'),
+			MACK : Resource.msg('kount.MACK','kount','Y'),
+			MERC : kount.getMerchantID(),
+			MODE : Resource.msg('kount.MODE_UPDATE','kount','U'),
+			PTOK : paymentToken || null,
 			SESS : sessID,
 			ORDR : orderID,
 			TRAN : session.custom.kount_TRAN,
-			VERS : Resource.msg('kount.VERS','kount',null),
-			PENC : 'KHASH'
+			VERS : Resource.msg('kount.VERS','kount','0630'),
 		}
 		if (payMethod == "CREDIT_CARD") {
-			RequiredInquiryKeysVal.LAST4 = creditCard.Last4;
-		}
-		/**
-		 * @FIXME Kount documentation (v.6.4.5: "Method U" article) mistake. If payment method in initial request == Paypal,
-		 * key PTYP in final request comes to required
-		 */
-		if(constants.ALLOWED_PAYMENT_METHODS.indexOf(paymentType) != -1) {
-			RequiredInquiryKeysVal.PTYP = paymentType;
+			RequiredInquiryKeysVal.LAST4 = creditCard.Last4 || null;
 		}
 	} else {
 		RequiredInquiryKeysVal = {
@@ -192,9 +185,9 @@ function init(args) {
 			CURR : Site.getCurrent().getDefaultCurrency(),
 			EMAL : customerEmail,
 			IPAD : IP,
-			MACK : Resource.msg('kount.MACK','kount',null),
-			MERC : kount._getMercahntID(),
-			MODE : Resource.msg('kount.MODE_INITIAL','kount',null),
+			MACK : Resource.msg('kount.MACK','kount','Y'),
+			MERC : kount.getMerchantID(),
+			MODE : Resource.msg('kount.MODE_INITIAL','kount','Q'),
 			PROD_DESC : ProdDescVals,
 			PROD_ITEM : ProdItemVals,
 			PROD_PRICE : ProdPriceVals,
@@ -203,23 +196,23 @@ function init(args) {
 			PTOK : paymentToken ? paymentToken : '',
 			PTYP : paymentType,
 			SESS : sessID,
-			SITE : kount._getWebsiteID(),
+			SITE : kount.getWebsiteID(),
 			TOTL : totalPrice,
-			VERS : Resource.msg('kount.VERS','kount',null),// Provided by Kount
+			VERS : Resource.msg('kount.VERS','kount','0630'),// Provided by Kount
 			// Optional keys
-			AVST : order.custom.kount_AVST || 'X',
-			AVSZ : order.custom.kount_AVSZ || 'X',
+			AVST : constants.ALLOWED_VERIFICATION_VALUES.indexOf(order.custom.kount_AVST) > -1 ? order.custom.kount_AVST : 'X',
+			AVSZ : constants.ALLOWED_VERIFICATION_VALUES.indexOf(order.custom.kount_AVSZ) > -1 ? order.custom.kount_AVSZ : 'X',
 			B2A1 : billingAddr.getAddress1(),
 			B2A2 : billingAddr.getAddress2(),
-			B2CC : billingAddr.getCountryCode().getValue(),
+			B2CC : billingAddr.getCountryCode() && billingAddr.getCountryCode().getValue(),
 			B2CI : billingAddr.getCity(),
 			B2PC : billingAddr.getPostalCode(),
 			B2PN : billingAddr.getPhone(),
 			B2ST : billingAddr.getStateCode(),
 			CASH : totalPrice,
-			CVVR : order.custom.kount_CVVR || 'X',
+			CVVR : constants.ALLOWED_VERIFICATION_VALUES.indexOf(order.custom.kount_CVVR) > -1 ? order.custom.kount_CVVR : 'X',
 			NAME : customerName,
-			FRMT : Resource.msg('kount.FRMT','kount',null),
+			FRMT : Resource.msg('kount.FRMT','kount','JSON'),
 			ORDR : orderID,
 			S2A1 : shippStreet1,
 			S2A2 : shippStreet2,
@@ -232,21 +225,22 @@ function init(args) {
 			S2ST : shippState,
 			SHTP : shippType,
 			UNIQ : customerID,
-			UAGT : request.httpHeaders,
-			UDF  : kount.getUDFFields(order)
+			UAGT : request.httpHeaders || null,
+			UDF  : kount.getUDFFields(order),
+			EPOC : customerCreateDate,
 		};
-		if(!empty(paymentToken)) {
+		if(!empty(paymentToken) || payMethod == "CREDIT_CARD") {
 			RequiredInquiryKeysVal.PENC = 'KHASH';
 		}
 		if (payMethod == "CREDIT_CARD") {
-			RequiredInquiryKeysVal.LAST4 = creditCard.Last4;
+			RequiredInquiryKeysVal.LAST4 = creditCard.Last4 || null;
 		}
 	}
 	
 	try {
 		var response = kount.PostRISRequest(RequiredInquiryKeysVal);
 		if(!empty(response)){
-			if(constants.RISK_WORKFLOW_TYPE == constants.RISK_WORKFLOW_TYPE_PRE && orderID) {
+			if(constants.RISK_WORKFLOW_TYPE == constants.RISK_WORKFLOW_TYPE_PRE && orderID && args.Order.custom.kount_Status.value != 'RETRY') {
 				responseArgs.KountOrderStatus = args.Order.custom.kount_Status.value;
 			} else {
 				responseArgs.KountOrderStatus = kount.evaluateRISResponse(response);

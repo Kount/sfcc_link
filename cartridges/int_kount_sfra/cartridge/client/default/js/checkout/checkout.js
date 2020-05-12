@@ -1,3 +1,5 @@
+/* global $ jQuery*/
+
 'use strict';
 
 var addressHelpers = require('base/checkout/address');
@@ -5,7 +7,6 @@ var shippingHelpers = require('base/checkout/shipping');
 var billingHelpers = require('base/checkout/billing');
 var summaryHelpers = require('base/checkout/summary');
 var formHelpers = require('base/checkout/formErrors');
-
 
 /**
  * Create the jQuery Checkout Plugin.
@@ -251,7 +252,7 @@ var formHelpers = require('base/checkout/formErrors');
 
                     return defer;
                 } else if (stage === 'placeOrder') {
-                	var kountExampleVerification = $('.kount-selector').serialize();
+                    var kountExampleVerification = $('.kount-selector').serialize();
                     $.ajax({
                         url: $('.place-order').data('action'),
                         method: 'POST',

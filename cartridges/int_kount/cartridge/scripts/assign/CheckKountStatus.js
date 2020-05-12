@@ -1,24 +1,19 @@
+/* eslint-disable no-unused-vars */
+/* global PIPELET_NEXT PIPELET_ERROR empty*/
+
 /**
-* Demandware Script File
-* To define input and output parameters, create entries of the form:
-*
-* @<paramUsageType> <paramName> : <paramDataType> [<paramComment>]
-*
-* where
-*   <paramUsageType> can be either 'input' or 'output'
-*   <paramName> can be any valid parameter name
-*   <paramDataType> identifies the type of the parameter
-*   <paramComment> is an optional comment
-*
-*
 *   @input KountOrderStatus : String
 *
 */
 
+/**
+ * @param {Object} args - pdict of the execution
+ * @returns {number} - returns execution result
+ */
 function execute(args) {
-	if(!empty(args.KountOrderStatus) && args.KountOrderStatus == "DECLINED") {
-		return PIPELET_ERROR;
-	}
+    if (!empty(args.KountOrderStatus) && args.KountOrderStatus === 'DECLINED') {
+        return PIPELET_ERROR;
+    }
 
-	return PIPELET_NEXT;
+    return PIPELET_NEXT;
 }
