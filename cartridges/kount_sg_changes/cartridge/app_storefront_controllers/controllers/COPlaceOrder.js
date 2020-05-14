@@ -24,7 +24,7 @@ var guard = require('~/cartridge/scripts/guard');
 var Kount = require('int_kount/cartridge/scripts/kount/LibKount');
 
 var Cart = app.getModel('Cart');
-var Order = app.getModel('Order');
+var Order = require('*/cartridge/scripts/models/OrderModel');
 var PaymentProcessor = app.getModel('PaymentProcessor');
 
 /**

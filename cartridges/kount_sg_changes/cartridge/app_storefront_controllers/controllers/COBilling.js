@@ -94,7 +94,7 @@ function returnToForm(cart, params) {
     });
 
     if (params) {
-        app.getView(require('~/cartridge/scripts/object').extend(params, {
+        app.getView(require('*/cartridge/scripts/object').extend(params, {
             Basket: cart.object,
             ContinueURL: URLUtils.https('COBilling-Billing')
         })).render('checkout/billing/billing');
