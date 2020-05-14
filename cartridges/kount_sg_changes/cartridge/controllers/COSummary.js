@@ -46,7 +46,7 @@ function start(context) {
         });
 
         var pageMeta = require('*/cartridge/scripts/meta');
-        var viewContext = require('app_storefront_core/cartridge/scripts/common/extend').immutable(context, {
+        var viewContext = require('*/cartridge/scripts/common/extend').immutable(context, {
             Basket: cart.object
         });
         pageMeta.update({pageTitle: Resource.msg('summary.meta.pagetitle', 'checkout', 'SiteGenesis Checkout')});
