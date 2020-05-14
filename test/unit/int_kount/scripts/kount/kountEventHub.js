@@ -195,7 +195,7 @@ var GiftCertificateMock = {
 };
 
 function getKountEventHub(isSFRA, inventoryExist) {
-    return proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/KountEventHub', {
+    return proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/kountEventHub', {
         'dw/web/URLUtils': urlUtilsMock,
         'dw/order/OrderMgr': OrderMgrMock,
         'dw/system/Site': {
@@ -211,15 +211,14 @@ function getKountEventHub(isSFRA, inventoryExist) {
         'dw/web/Resource': ResourceMock,
         'dw/system/Pipeline': PipelineMock,
         'dw/system/Transaction': TransactionMock,
-        './UpdateCustomAttribute': UpdateCustomAttributeMock,
-        './UpdateOrderStatus': UpdateOrderStatusMock,
-        './CheckProductInventory': inventoryExist ? CheckProductInventoryMock : CheckProductInventoryErrorMock,
-        '*/cartridge/scripts/kount/LibKount': isSFRA ? libKountMockSFRA : libKountMock,
+        '*/cartridge/scripts/kount/updateCustomAttribute': UpdateCustomAttributeMock,
+        '*/cartridge/scripts/kount/updateOrderStatus': UpdateOrderStatusMock,
+        '*/cartridge/scripts/kount/checkProductInventory': inventoryExist ? CheckProductInventoryMock : CheckProductInventoryErrorMock,
+        '*/cartridge/scripts/kount/libKount': isSFRA ? libKountMockSFRA : libKountMock,
         '*/cartridge/scripts/checkout/checkoutHelpers': COHelpersMock,
-        'int_kount_sfra/cartridge/scripts/kount/EmailHelper': EmailHelperMock,
-        './KountConstants': {
-            ALLOWED_RISK_PARAMS: ['testing'],
-            CORE_SCRIPTS_PATH: '*'
+        '*/cartridge/scripts/kount/emailHelper': EmailHelperMock,
+        '*/cartridge/scripts/kount/kountConstants': {
+            ALLOWED_RISK_PARAMS: ['testing']
         },
         '*/cartridge/scripts/models/GiftCertificateModel': GiftCertificateMock,
         'dw/system/Logger': {

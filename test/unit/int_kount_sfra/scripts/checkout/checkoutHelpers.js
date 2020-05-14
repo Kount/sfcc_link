@@ -81,7 +81,7 @@ describe('EmailHelper', function () {
             'dw/order/PaymentInstrument': {},
             'dw/order/PaymentMgr': PaymentMgrMock,
             'dw/system/Transaction': TransactionMock,
-            'int_kount/cartridge/scripts/kount/KHash': KHashMock
+            '*/cartridge/scripts/kount/kHash': KHashMock
         });
     });
 

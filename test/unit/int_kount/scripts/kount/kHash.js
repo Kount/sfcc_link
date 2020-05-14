@@ -24,10 +24,10 @@ describe('KHash', function () {
     var KHash = null;
 
     beforeEach(function () {
-        KHash = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/KHash', {
-            './KountConstants': constantsMock,
-            '*/cartridge/scripts/kount/Base85': base85Mock,
-            '*/cartridge/scripts/kount/SHA1': sha1Mock
+        KHash = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/kHash', {
+            '*/cartridge/scripts/kount/kountConstants': constantsMock,
+            '*/cartridge/scripts/kount/base85': base85Mock,
+            '*/cartridge/scripts/kount/sha1': sha1Mock
         });
     });
 

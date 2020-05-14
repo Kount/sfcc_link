@@ -7,7 +7,7 @@ describe('Base85', function () {
     var Base85 = null;
 
     beforeEach(function () {
-        Base85 = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/Base85', {});
+        Base85 = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/base85', {});
     });
 
     it('should provide a decode function', function () {

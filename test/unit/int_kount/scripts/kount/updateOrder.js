@@ -52,11 +52,11 @@ describe('UpdateOrder', function () {
     var riskResultMock = null;
 
     beforeEach(function () {
-        UpdateOrder = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/UpdateOrder', {
+        UpdateOrder = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/updateOrder', {
             'dw/web/URLUtils': urlUtilsMock,
             'dw/system/Transaction': TransactionMock,
             'dw/web/Resource': ResourceMock,
-            '*/cartridge/scripts/kount/LibKount': libKountMock
+            '*/cartridge/scripts/kount/libKount': libKountMock
         });
         UpdateOrder.__proto__.empty = emptyFuncMock; // eslint-disable-line
         orderMock = getOrderMock();

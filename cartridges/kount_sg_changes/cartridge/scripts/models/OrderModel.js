@@ -14,7 +14,7 @@ var Status = require('dw/system/Status');
 var Transaction = require('dw/system/Transaction');
 
 /* Kount */
-var Kount = require('int_kount/cartridge/scripts/kount/LibKount');
+var Kount = require('*/cartridge/scripts/kount/libKount');
 
 
 /**

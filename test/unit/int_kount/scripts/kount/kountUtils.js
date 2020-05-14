@@ -34,7 +34,7 @@ describe('KountUtils', function () {
     var KountUtils = null;
 
     beforeEach(function () {
-        KountUtils = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/KountUtils.ds', {
+        KountUtils = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/kountUtils.js', {
             'dw/web/URLUtils': urlUtilsMock,
             'dw/util': utilMock
         });

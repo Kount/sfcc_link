@@ -13,7 +13,7 @@ var Transaction = require('dw/system/Transaction');
  * @returns {{orderStatus: string, originalOrderStatus: string, mailTo: string}} - returns execution status of the function
  */
 function update(eventData, attr, order) {
-    var kount = require('*/cartridge/scripts/kount/LibKount');
+    var kount = require('*/cartridge/scripts/kount/libKount');
     var orderStatus;
 
     if (!order) {

@@ -48,8 +48,8 @@ function processENSRecord(EventHub, kount, record) {
  * @param {Object} args - Optional arguments to filter the search
  */
 function execute() {
-    var EventHub = require('*/cartridge/scripts/kount/KountEventHub');
-    var kount = require('*/cartridge/scripts/kount/LibKount');
+    var EventHub = require('*/cartridge/scripts/kount/kountEventHub');
+    var kount = require('*/cartridge/scripts/kount/libKount');
     var results = CustomObjectMgr.queryCustomObjects('KountENSQueue', null, 'creationDate ASC', null);
     if (results.count > 0) {
         while (results.hasNext()) {

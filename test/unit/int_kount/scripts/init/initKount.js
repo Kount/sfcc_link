@@ -25,7 +25,7 @@ describe('initKount', function () {
     beforeEach(function () {
         initKount = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/init/initKount', {
             'dw/svc/LocalServiceRegistry': LocalServiceRegistryMock,
-            '*/cartridge/scripts/kount/LibKount': libKountMock
+            '*/cartridge/scripts/kount/libKount': libKountMock
         });
         libKountMock.plainTextHandler.reset();
     });

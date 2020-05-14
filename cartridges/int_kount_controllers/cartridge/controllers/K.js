@@ -7,7 +7,7 @@ var BasketMgr = require('dw/order/BasketMgr');
 var ISML = require('dw/template/ISML');
 
 // Tools
-var kount = require('int_kount/cartridge/scripts/kount/LibKount');
+var kount = require('*/cartridge/scripts/kount/libKount');
 
 /**
  * @description Collect info about user on the billing page.
@@ -23,7 +23,7 @@ function DataCollector() {
                     Basket: basket
                 });
             } else {
-                session.custom.sessId = session.sessionID.substr(0, 24).replace('-', '_', 'g') + basket.getUUID().substr(0, 8).replace('-', '_', 'g');
+                session.privacy.sessId = session.sessionID.substr(0, 24).replace('-', '_', 'g') + basket.getUUID().substr(0, 8).replace('-', '_', 'g');
             }
         } else {
             kount.writeExecutionError(new Error("KOUNT: K.js: Can't get user IP"), 'DataCollector', 'error');

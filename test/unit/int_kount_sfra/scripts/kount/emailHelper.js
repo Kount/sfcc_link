@@ -46,7 +46,7 @@ describe('EmailHelper', function () {
     var EmailHelper = null;
 
     beforeEach(function () {
-        EmailHelper = proxyquire('../../../../../cartridges/int_kount_sfra/cartridge/scripts/kount/EmailHelper', {
+        EmailHelper = proxyquire('../../../../../cartridges/int_kount_sfra/cartridge/scripts/kount/emailHelper', {
             'dw/web/URLUtils': urlUtilsMock,
             'dw/net/Mail': MailMock,
             'dw/util/HashMap': HashMapMock,

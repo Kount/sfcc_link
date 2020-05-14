@@ -5,7 +5,7 @@
 var server = require('server');
 
 // Tools
-var kount = require('int_kount/cartridge/scripts/kount/LibKount');
+var kount = require('*/cartridge/scripts/kount/libKount');
 
 /**
  * @description Handler for the Kount XML Event Notification System (ENS)

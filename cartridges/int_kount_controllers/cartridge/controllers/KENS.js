@@ -6,7 +6,7 @@
 var ISML = require('dw/template/ISML');
 
 // Tools
-var kount = require('*/cartridge/scripts/kount/LibKount');
+var kount = require('*/cartridge/scripts/kount/libKount');
 
 /**
  * @description Handler for the Kount XML Event Notification System (ENS)

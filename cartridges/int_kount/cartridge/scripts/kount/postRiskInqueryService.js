@@ -10,7 +10,7 @@ var Resource = require('dw/web/Resource');
 var Encoding = require('dw/crypto/Encoding');
 
 // scripts
-var constants = require('./KountConstants');
+var constants = require('*/cartridge/scripts/kount/kountConstants');
 
 var responseArgs = {
 	KountOrderStatus: '',
@@ -30,8 +30,8 @@ var responseArgs = {
  * @returns Object {{KountOrderStatus: string, responseRIS: string}}
  */
 function init(args) {
-	var kount = require('*/cartridge/scripts/kount/LibKount');
-	var KHash = require('*/cartridge/scripts/kount/KHash');
+	var kount = require('*/cartridge/scripts/kount/libKount');
+	var KHash = require('*/cartridge/scripts/kount/kHash');
 	var	request = args.CurrentRequest;
 	var	email = args.Email || Resource.msg('kount.noemail','kount','noemail@kount.com');
 	var	IP = request.httpRemoteAddress || '10.0.0.1';
@@ -173,7 +173,7 @@ function init(args) {
 			PTOK : paymentToken || null,
 			SESS : sessID,
 			ORDR : orderID,
-			TRAN : session.custom.kount_TRAN,
+			TRAN : session.privacy.kount_TRAN,
 			VERS : Resource.msg('kount.VERS','kount','0630'),
 		}
 		if (payMethod == "CREDIT_CARD") {

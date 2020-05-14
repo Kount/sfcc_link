@@ -6,7 +6,7 @@
 var ProductInventoryMgr = require('dw/catalog/ProductInventoryMgr');
 
 // Script
-var kount = require('*/cartridge/scripts/kount/LibKount');
+var kount = require('*/cartridge/scripts/kount/libKount');
 
 /**
  * @description Check if all items in the order exist in shop inventory list

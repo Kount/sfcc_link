@@ -464,16 +464,6 @@
                     </value-definition>
                 </value-definitions>
             </attribute-definition>
-            <attribute-definition attribute-id="kount_CORE">
-                <display-name xml:lang="x-default">Core cartridge (controllers)</display-name>
-                <description xml:lang="x-default">Kount uses your storefront controller cartridge, please fill this field with name of this cartridge.&#13;
-                    For example this cartridge can be named like:  app_storefront_controllers or storefront_controllers e.g.&#13;
-                    You can get  name in the Administration &gt;  Sites &gt;  Manage Sites &gt; &lt;NAME_OF_YOUR_SITE&gt; - Settings -&gt; Cartridges input</description>
-                <type>string</type>
-                <mandatory-flag>false</mandatory-flag>
-                <externally-managed-flag>false</externally-managed-flag>
-                <min-length>0</min-length>
-            </attribute-definition>
             <attribute-definition attribute-id="kount_ENS">
                 <display-name xml:lang="x-default">Enable Event Notification Service</display-name>
                 <description xml:lang="x-default">Enable/Disable ENS</description>
@@ -684,7 +674,6 @@
                 <attribute attribute-id="kount_IsEnabled"/>
                 <attribute attribute-id="kount_isSFRA"/>
                 <attribute attribute-id="kount_MODE"/>
-                <attribute attribute-id="kount_CORE"/>
 				<attribute attribute-id="kount_ExampleVerificationsEnabled"/>
 				<attribute attribute-id="kount_HashSaltKey"/>
                 <attribute attribute-id="kount_isSFRA"/>

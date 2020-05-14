@@ -16,16 +16,16 @@ var Transaction = require('dw/system/Transaction');
 var CustomObjectMgr = require('dw/object/CustomObjectMgr');
 
 // scripts
-var constants = require('./KountConstants');
-var RiskService = require('*/cartridge/scripts/kount/PostRiskInqueryService');
-var UpdateOrder = require('*/cartridge/scripts/kount/UpdateOrder');
-var KountUtils = require('*/cartridge/scripts/kount/KountUtils');
+var constants = require('*/cartridge/scripts/kount/kountConstants');
+var RiskService = require('*/cartridge/scripts/kount/postRiskInqueryService');
+var UpdateOrder = require('*/cartridge/scripts/kount/updateOrder');
+var KountUtils = require('*/cartridge/scripts/kount/kountUtils');
 var kountService = require('*/cartridge/scripts/init/initKount');
-var KHash = require('*/cartridge/scripts/kount/KHash');
-var ipaddr = require('*/cartridge/scripts/kount/ipaddr');
+var KHash = require('*/cartridge/scripts/kount/kHash');
+var ipaddr = require('*/cartridge/scripts/kount/ipAddr');
 
 // Constants
-var authType = require('*/cartridge/scripts/kount/KountConstants').RISK_WORKFLOW_TYPE;
+var authType = constants.RISK_WORKFLOW_TYPE;
 
 function _getRISUrl(){
     return Site.getCustomPreferenceValue('kount_MODE').value == 'Test' ? constants.RIS_TEST_URL : constants.RIS_PRODUCTION_URL;
@@ -44,7 +44,7 @@ function _getHashSaltKey() {
 }
 
 function _clearSession() {
-    session.custom['kount_TRAN'] = null;
+    session.privacy['kount_TRAN'] = null;
 }
 
 function _getNotificationEmailList(){
@@ -85,7 +85,7 @@ function isSFRA() {
 }
 
 function getCoreScript(scriptName) {
-    return constants.CORE_SCRIPTS_PATH ? require(constants.CORE_SCRIPTS_PATH + '/cartridge/scripts/' + scriptName) : false;
+    return require('*/cartridge/scripts/' + scriptName);
 }
 
 function getNotificationEmail() {
@@ -273,7 +273,7 @@ function plainTextHandler(response){
  *	@param {String} Error message
  */
 function sendEmailNotification(msg){
-    var template = new Template("mail/errornotification"),
+    var template = new Template("mail/errorNotification"),
         templateMap = new HashMap(),
         mailMsg = new Mail(),
         siteName = Site.getName();
@@ -341,7 +341,7 @@ function preRiskCall(basket, callback, isSfra) {
                 }
                 return result;
             } else {
-                session.custom['kount_TRAN'] = result.responseRIS && result.responseRIS.TRAN;
+                session.privacy['kount_TRAN'] = result.responseRIS && result.responseRIS.TRAN;
                 return result;
             }
         } catch (e) {
@@ -439,7 +439,7 @@ function PostRIS(Order, isSfra) {
         }
         // set serviceData
         serviceData = {
-            'SessionID': session.custom.sessId,
+            'SessionID': session.privacy.sessId,
             'Email': Order.customerEmail,
             'PaymentType': session.forms.billing.paymentMethod.value,
             'CreditCard': {
@@ -455,7 +455,7 @@ function PostRIS(Order, isSfra) {
         var last4 = creditCardNumber ? creditCardNumber.substr(creditCardNumber.length - 4) : '';
         hashedCCNumber = KHash.hashPaymentToken(creditCardNumber);	// hash CC number from form
         serviceData = {
-            'SessionID': session.custom.sessId,
+            'SessionID': session.privacy.sessId,
             'Email': session.forms.billing.billingAddress.email.emailAddress.htmlValue,
             'PaymentType': session.forms.billing.paymentMethods.selectedPaymentMethodID.htmlValue,
             'CreditCard': {
@@ -469,7 +469,7 @@ function PostRIS(Order, isSfra) {
     }
     var riskResult = RiskService.init(serviceData);
 
-    UpdateOrder.init(Order, riskResult, hashedCCNumber, session.custom.sessId);
+    UpdateOrder.init(Order, riskResult, hashedCCNumber, session.privacy.sessId);
 
     return riskResult;
 }
@@ -588,7 +588,7 @@ function getPayment(payments) {
 
 function getSessionIframe(sessionIframe, basketUUID) {
     var sessionId = sessionIframe.substr(0,24).replace('-','_','g') + basketUUID.substr(0,8).replace('-','_','g');
-    session.custom['sessId'] = sessionId;
+    session.privacy['sessId'] = sessionId;
     return sessionId;
 }
 

@@ -48,10 +48,10 @@ describe('UpdateCustomAttribute', function () {
     var UpdateCustomAttribute = null;
 
     beforeEach(function () {
-        UpdateCustomAttribute = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/UpdateCustomAttribute', {
+        UpdateCustomAttribute = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/updateCustomAttribute', {
             'dw/web/URLUtils': urlUtilsMock,
             'dw/system/Transaction': TransactionMock,
-            '*/cartridge/scripts/kount/LibKount': libKountMock
+            '*/cartridge/scripts/kount/libKount': libKountMock
         });
         orderMock.custom.kount_Status = 'HOLD';
         eventDataMock.newValue = 'A';

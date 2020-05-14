@@ -1,8 +1,8 @@
 'use strict';
 
-var Base85 = require('*/cartridge/scripts/kount/Base85');
-var SHA1 = require('*/cartridge/scripts/kount/SHA1');
-var constants = require('./KountConstants');
+var Base85 = require('*/cartridge/scripts/kount/base85');
+var SHA1 = require('*/cartridge/scripts/kount/sha1');
+var constants = require('*/cartridge/scripts/kount/kountConstants');
 
 /**
  * @description Base85 module to the sdk used for encode/decode.

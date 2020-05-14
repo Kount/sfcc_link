@@ -7,7 +7,7 @@ describe('SHA1', function () {
     var SHA1 = null;
 
     beforeEach(function () {
-        SHA1 = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/SHA1', {});
+        SHA1 = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/sha1', {});
     });
 
     it('should export an encode function', function () {

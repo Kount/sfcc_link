@@ -41,7 +41,7 @@
             <step step-id="process-ens-records" type="ExecuteScriptModule" enforce-restart="false">
                 <description/>
                 <parameters>
-                    <parameter name="ExecuteScriptModule.Module">int_kount/cartridge/scripts/jobs/ProcessKountENSQueue.js</parameter>
+                    <parameter name="ExecuteScriptModule.Module">int_kount/cartridge/scripts/jobs/processKountENSQueue.js</parameter>
                     <parameter name="ExecuteScriptModule.FunctionName">execute</parameter>
                     <parameter name="ExecuteScriptModule.Transactional">true</parameter>
                 </parameters>

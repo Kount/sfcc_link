@@ -1,6 +1,6 @@
 {
   "name": "int_kount_sfra",
-  "version": "18.2.0",
+  "version": "20.1.0",
   "description": "Kount",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "lint": "npm run lint:js",
     "lint:js": "sgmf-scripts --lint js",
     "upload": "sgmf-scripts --upload",
-    "uploadCartridge": "sgmf-scripts --uploadCartridge int_kount && sgmf-scripts --uploadCartridge int_kount_sfra && sgmf-scripts --uploadCartridge int_kount_controllers",
+    "uploadCartridge": "sgmf-scripts --uploadCartridge kount_sg_changes && sgmf-scripts --uploadCartridge int_kount && sgmf-scripts --uploadCartridge int_kount_sfra && sgmf-scripts --uploadCartridge int_kount_controllers",
     "watch": "sgmf-scripts --watch",
     "watch:static": "sgmf-scripts --watch static"
   },

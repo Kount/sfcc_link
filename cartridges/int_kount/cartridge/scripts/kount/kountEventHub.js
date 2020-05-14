@@ -11,12 +11,12 @@ var Transaction = require('dw/system/Transaction');
 var Order = require('dw/order/Order');
 
 // Scripts
-var AttrUpdater = require('./UpdateCustomAttribute');
-var ProductInventory = require('./CheckProductInventory');
+var AttrUpdater = require('*/cartridge/scripts/kount/updateCustomAttribute');
+var ProductInventory = require('*/cartridge/scripts/kount/checkProductInventory');
 var Logger = require('dw/system/Logger').getLogger('kount', 'KountEventHub');
 
 // Tools
-var kount = require('*/cartridge/scripts/kount/LibKount');
+var kount = require('*/cartridge/scripts/kount/libKount');
 var COHelpers;
 var EmailHelper;
 var EmailModel;
@@ -31,13 +31,13 @@ if (!kount.isSFRA()) {
     OrderModel = controllersApp.getModel('Order');
 } else {
     COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
-    EmailHelper = require('int_kount_sfra/cartridge/scripts/kount/EmailHelper');
+    EmailHelper = require('*/cartridge/scripts/kount/emailHelper');
     EmailModel = null;
     OrderModel = null;
 }
 
 // Const
-var constants = require('./KountConstants');
+var constants = require('*/cartridge/scripts/kount/kountConstants');
 var statusMap = { A: 'APPROVED', D: 'DECLINED', R: 'HOLD', E: 'HOLD' };
 
 /**
@@ -152,7 +152,7 @@ var Hub = {
     createGiftCertificates: function (order) {
         var gc;
         if (OrderModel) {
-            var GiftCertificate = require(constants.CORE_SCRIPTS_PATH + '/cartridge/scripts/models/GiftCertificateModel');
+            var GiftCertificate = require('*/cartridge/scripts/models/GiftCertificateModel');
             Transaction.wrap(function () {
                 gc = order.getGiftCertificateLineItems().toArray().map(function (lineItem) {
                     return GiftCertificate.createGiftCertificateFromLineItem(lineItem, order.getOrderNo());
@@ -193,13 +193,13 @@ var Hub = {
     sendRiskMail: function (mailTo, event) {
         if (!empty(event) && Site.getCustomPreferenceValue('kount_RISK_CHANGE_' + event.attributeName)) {
             if (EmailModel) {
-                EmailModel.get('mail/risk_change', mailTo)
+                EmailModel.get('mail/riskChange', mailTo)
                     .setSubject('Notification mail')
                     .setFrom(kount.getNotificationEmail())
                     .send({ EventData: event });
             } else if (kount.isSFRA()) {
                 EmailHelper.sendEmail({
-                    template: 'mail/risk_change',
+                    template: 'mail/riskChange',
                     subject: 'Notification mail',
                     to: mailTo,
                     from: kount.getNotificationEmail(),
@@ -210,7 +210,7 @@ var Hub = {
                     MailSubject: 'Notification mail',
                     MailTo: mailTo,
                     MailFrom: kount.getNotificationEmail(),
-                    MailTemplate: 'mail/risk_change',
+                    MailTemplate: 'mail/riskChange',
                     EventData: event
                 });
             }

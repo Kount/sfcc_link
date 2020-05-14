@@ -8,7 +8,6 @@ exports.ALLOWED_RISK_PARAMS = ['SCOR', 'REPLY', 'VELO', 'VMAX', 'GEOX', 'NETW', 
 exports.RISK_WORKFLOW_TYPE = Site.getCustomPreferenceValue('kount_AUTH_TYPE').value;
 exports.RISK_WORKFLOW_TYPE_POST = 'post';
 exports.RISK_WORKFLOW_TYPE_PRE = 'pre';
-exports.CORE_SCRIPTS_PATH = Site.getCustomPreferenceValue('kount_CORE');
 exports.HASHSALTKEY = Site.getCustomPreferenceValue('kount_HashSaltKey') || '';
 exports.MERCHANTID = Site.getCustomPreferenceValue('kount_MerchantID') || '';
 exports.ALLOWED_VERIFICATION_VALUES = ['M', 'N', 'X'];

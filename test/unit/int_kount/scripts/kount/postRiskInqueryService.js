@@ -280,7 +280,7 @@ describe('PostRiskInqueryService', function () {
     var PostRiskInqueryService = null;
 
     beforeEach(function () {
-        PostRiskInqueryService = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/PostRiskInqueryService.ds', {
+        PostRiskInqueryService = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/postRiskInqueryService.js', {
             'dw/web/URLUtils': urlUtilsMock,
             'dw/system/Site': SiteMock,
             'dw/system/System': {},
@@ -291,9 +291,9 @@ describe('PostRiskInqueryService', function () {
                 msg: function () { return 'string'; }
             },
             'dw/crypto/Encoding': EncodingMock,
-            './KountConstants': constantsMock,
-            '*/cartridge/scripts/kount/LibKount': libKountMock,
-            '*/cartridge/scripts/kount/KHash': {
+            '*/cartridge/scripts/kount/kountConstants': constantsMock,
+            '*/cartridge/scripts/kount/libKount': libKountMock,
+            '*/cartridge/scripts/kount/kHash': {
                 hashGiftCard: function (data) {
                     return data;
                 }
@@ -302,7 +302,8 @@ describe('PostRiskInqueryService', function () {
         PostRiskInqueryService.__proto__.request = reqMock; // eslint-disable-line
         PostRiskInqueryService.__proto__.empty = emptyFuncMock; // eslint-disable-line
         PostRiskInqueryService.__proto__.session = { // eslint-disable-line
-            custom: {}
+            custom: {},
+            privacy: {}
         };
     });
 

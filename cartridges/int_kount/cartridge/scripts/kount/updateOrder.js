@@ -15,7 +15,7 @@ var Resource = require('dw/web/Resource');
  * @returns {boolean|Function} - return status of execution
  */
 function init(order, riskResult, hashedCCNumber, sessId) {
-    var kount = require('*/cartridge/scripts/kount/LibKount');
+    var kount = require('*/cartridge/scripts/kount/libKount');
 
     if (riskResult.responseRIS && riskResult.responseRIS.MODE === Resource.msg('kount.MODE_UPDATE', 'kount', null)) {
         return true;

@@ -71,9 +71,9 @@ describe('CheckProductInventory', function () {
     var callback = sinon.spy();
 
     before(function () {
-        CheckProductInventory = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/CheckProductInventory', {
+        CheckProductInventory = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/checkProductInventory', {
             'dw/catalog/ProductInventoryMgr': ProductInventoryMgrMock,
-            '*/cartridge/scripts/kount/LibKount': kountMock
+            '*/cartridge/scripts/kount/libKount': kountMock
         });
         CheckProductInventory.__proto__.empty = emptyFuncMock; // eslint-disable-line
     });

@@ -20,8 +20,7 @@ var constantsMock = {
     RIS_TEST_URL: 'RIS_TEST_URL',
     RIS_PRODUCTION_URL: 'RIS_PRODUCTION_URL',
     DC_TEST_URL: 'DC_TEST_URL',
-    DC_PRODUCTION_URL: 'DC_PRODUCTION_URL',
-    CORE_SCRIPTS_PATH: 'app_core'
+    DC_PRODUCTION_URL: 'DC_PRODUCTION_URL'
 };
 
 var siteMock = {
@@ -181,8 +180,7 @@ var orderMock = {
 };
 
 var sessionMock = {
-    custom: {
-        isSFRA: 'true',
+    privacy: {
         sessId: 'sessId'
     },
     forms: {
@@ -297,7 +295,7 @@ describe('LibKount', function () {
     var LibKount = null;
 
     beforeEach(function () {
-        LibKount = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/LibKount.ds', {
+        LibKount = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/libKount.js', {
             'dw/web/URLUtils': urlUtilsMock,
             'dw/svc/ServiceRegistry': {},
             'dw/system/Logger': LoggerMock,
@@ -314,15 +312,15 @@ describe('LibKount', function () {
             'dw/order/Basket': BasketClassMock,
             'dw/system/Transaction': TransactionMock,
             'dw/object/CustomObjectMgr': CustomObjectMgrMock,
-            './KountConstants': constantsMock,
-            '*/cartridge/scripts/kount/PostRiskInqueryService': PostRiskInqueryServiceMock,
-            '*/cartridge/scripts/kount/UpdateOrder': UpdateOrderMock,
-            '*/cartridge/scripts/kount/KountUtils': KountUtilsMock,
+            '*/cartrige/scripts/kount/kountConstants': constantsMock,
+            '*/cartridge/scripts/kount/postRiskInqueryService': PostRiskInqueryServiceMock,
+            '*/cartridge/scripts/kount/updateOrder': UpdateOrderMock,
+            '*/cartridge/scripts/kount/kountUtils': KountUtilsMock,
             '*/cartridge/scripts/init/initKount': kountServiceMock,
-            '*/cartridge/scripts/kount/KHash': KHashMock,
-            '*/cartridge/scripts/kount/KountConstants': constantsMock,
-            '*/cartridge/scripts/kount/ipaddr': ipaddrMock,
-            'app_core/cartridge/scripts/testScriptName': {
+            '*/cartridge/scripts/kount/kHash': KHashMock,
+            '*/cartridge/scripts/kount/kountConstants': constantsMock,
+            '*/cartridge/scripts/kount/ipAddr': ipaddrMock,
+            '*/cartridge/scripts/testScriptName': {
                 test: 'test'
             },
             'dw/util/UUIDUtils': {

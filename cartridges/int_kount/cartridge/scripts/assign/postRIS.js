@@ -8,7 +8,7 @@
 */
 
 // Kount
-var Kount = require('int_kount/cartridge/scripts/kount/LibKount');
+var Kount = require('*/cartridge/scripts/kount/libKount');
 
 /**
  * @param {Object} args - pdict of the execution

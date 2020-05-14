@@ -30,7 +30,7 @@
      ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</iscomment>
     <isif condition="${!empty(pdict.KountOrderStatus) && pdict.KountOrderStatus =='DECLINED'}">
         <div class="error-message">
-            <isprint value="${dw.web.Resource.msg('kount.DECLINED','kount',null)}" encoding="off"/>
+            <isprint value="${dw.web.Resource.msg('kount.DECLINED','kount',null)}" encoding="on"/>
         </div>
     </isif>
 

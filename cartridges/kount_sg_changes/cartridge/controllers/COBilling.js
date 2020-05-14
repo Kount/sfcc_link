@@ -26,7 +26,7 @@ var app = require('*/cartridge/scripts/app');
 var guard = require('*/cartridge/scripts/guard');
 
 /* Kount */
-var Kount = require('int_kount/cartridge/scripts/kount/LibKount');
+var Kount = require('*/cartridge/scripts/kount/libKount');
 
 /**
  * Initializes the address form. If the customer chose "use as billing
