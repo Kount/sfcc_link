@@ -83,19 +83,18 @@ var libKountMock = {
     getNotificationEmail: function () {
         return 'NotificationEmail@mail.com';
     },
-    getCoreScript: function () {
-        return {
-            getModel: function (modelName) {
-                if (modelName === 'Email') {
-                    return emailModelMock;
-                } else if (modelName === 'Order') {
-                    return orderModelMock;
-                }
-                return {};
-            }
-        };
-    },
     sendEmailNotification: sinon.stub()
+};
+
+var appMock = {
+    getModel: function (modelName) {
+        if (modelName === 'Email') {
+            return emailModelMock;
+        } else if (modelName === 'Order') {
+            return orderModelMock;
+        }
+        return {};
+    }
 };
 
 var OrderMgrMock = {
@@ -223,7 +222,8 @@ function getKountEventHub(isSFRA, inventoryExist) {
         '*/cartridge/scripts/models/GiftCertificateModel': GiftCertificateMock,
         'dw/system/Logger': {
             getLogger: function () { }
-        }
+        },
+        '*/cartridge/scripts/app': appMock
     });
 }
 

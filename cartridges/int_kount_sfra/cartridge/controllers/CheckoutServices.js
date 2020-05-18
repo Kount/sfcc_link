@@ -3,7 +3,6 @@
 var server = require('server');
 
 var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
-var csrfProtection = require('*/cartridge/scripts/middleware/csrf');
 var Kount = require('*/cartridge/scripts/kount/libKount');
 var Transaction = require('dw/system/Transaction');
 var page = module.superModule;
@@ -68,7 +67,6 @@ server.append(
 server.replace('PlaceOrder', server.middleware.https, function (req, res, next) {
     var BasketMgr = require('dw/order/BasketMgr');
     var Resource = require('dw/web/Resource');
-    var Transaction = require('dw/system/Transaction');
     var URLUtils = require('dw/web/URLUtils');
     var basketCalculationHelpers = require('*/cartridge/scripts/helpers/basketCalculationHelpers');
     var hooksHelper = require('*/cartridge/scripts/helpers/hooks');

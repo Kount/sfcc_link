@@ -325,7 +325,8 @@ describe('LibKount', function () {
             },
             'dw/util/UUIDUtils': {
                 createUUID: function () { return 'UUID'; }
-            }
+            },
+            'dw/util/Calendar': {}
         });
         LibKount.__proto__.empty = emptyFuncMock; // eslint-disable-line
         LibKount.__proto__.session = sessionMock // eslint-disable-line
@@ -399,11 +400,6 @@ describe('LibKount', function () {
             assert.isTrue(ResourceMock.msg.calledOnce);
         });
 
-        it('getCoreScript function should return proper file path', function () {
-            var result = LibKount.getCoreScript('testScriptName');
-            assert.equal(result.test, 'test');
-        });
-
         it('filterIP function should return true for whitelisted values', function () {
             var result = LibKount.filterIP('kount_IPFilter_value');
             assert.equal(result, true);
@@ -417,13 +413,13 @@ describe('LibKount', function () {
 
     describe('PostRISRequest function', function () {
         it('PostRISRequest function should call service with api key and url from prefs', function () {
-            var result = LibKount.PostRISRequest({}); // eslint-disable-line
+            var result = LibKount.postRISRequest({}); // eslint-disable-line
             assert.equal(kountServiceMock.setURL.args[0][0], 'RIS_TEST_URL');
             assert.equal(kountServiceMock.addHeader.args[0][1], 'kount_APIKey_value');
         });
 
         it('PostRISRequest function should call service with provided keysVal', function () {
-            var result = LibKount.PostRISRequest({ // eslint-disable-line
+            var result = LibKount.postRISRequest({ // eslint-disable-line
                 key1: 'val1',
                 key2: 'val2',
                 key3: null
@@ -433,7 +429,7 @@ describe('LibKount', function () {
         });
 
         it('PostRISRequest function should call service and handle UDF and UAGT params', function () {
-            var result = LibKount.PostRISRequest({ // eslint-disable-line
+            var result = LibKount.postRISRequest({ // eslint-disable-line
                 UDF: [{
                     label: 'label',
                     value: 'value'

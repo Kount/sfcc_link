@@ -25,7 +25,7 @@ var controllersApp;
 
 if (!kount.isSFRA()) {
     // Core APP
-    controllersApp = kount.getCoreScript('app') || { getModel: function () {} };
+    controllersApp = require('*/cartridge/scripts/app') || { getModel: function () {} };
     // Models
     EmailModel = controllersApp.getModel('Email');
     OrderModel = controllersApp.getModel('Order');
