@@ -15,7 +15,7 @@ module.exports = {
         var xmlList = xmlObj.children('event');
         var eventDataMap = new dwutil.ArrayList();
 
-        for (var i = 0; i < xmlList.length; i++) {
+        for (var i = 0; i < xmlList.length(); i++) {
             var itemXML = xmlList[i];
             var paramName = itemXML.name.toString().split('_');
             eventData = {
