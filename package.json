@@ -1,0 +1,35 @@
+{
+  "name": "int_kount_sfra",
+  "version": "20.1.0",
+  "description": "Kount",
+  "main": "index.js",
+  "scripts": {
+    "test": "sgmf-scripts --test test/unit/**/*.js",
+    "cover": "sgmf-scripts --cover 'test/unit'",
+    "compile:js": "sgmf-scripts --compile js",
+    "lint": "npm run lint:js",
+    "lint:js": "sgmf-scripts --lint js",
+    "upload": "sgmf-scripts --upload",
+    "uploadCartridge": "sgmf-scripts --uploadCartridge kount_sg_changes && sgmf-scripts --uploadCartridge int_kount && sgmf-scripts --uploadCartridge int_kount_sfra && sgmf-scripts --uploadCartridge int_kount_controllers",
+    "watch": "sgmf-scripts --watch",
+    "watch:static": "sgmf-scripts --watch static"
+  },
+  "author": "AstoundCommerce",
+  "homepage": "https://astoundcommerce.com/",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-subset": "^1.6.0",
+    "eslint": "^3.2.2",
+    "eslint-config-airbnb-base": "^5.0.1",
+    "eslint-plugin-import": "^1.12.0",
+    "eslint-plugin-sitegenesis": "~1.0.0",
+    "proxyquire": "1.7.4",
+    "sgmf-scripts": "^2.0.0",
+    "sinon": "^1.17.7"
+  },
+  "dependencies": {},
+  "packageName": "int_kount_sfra",
+  "paths": {
+    "base": "../storefront-reference-architecture/cartridges/app_storefront_base/"
+  }
+}

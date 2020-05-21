@@ -1,0 +1,16 @@
+<!--- TEMPLATENAME: dataCollector.isml --->
+<isset name="kount" value="${require('*/cartridge/scripts/kount/libKount')}" scope="page"/>
+
+<isset name="sessionId" value="${kount.getSessionIframe(pdict.CurrentSession.sessionID, pdict.Basket.getUUID())}" scope="page"/>
+<isset name="merchantId" value="${kount.getMerchantID()}" scope="page"/>
+<isset name="DC_url" value="${kount.getDCUrl()}" scope="page"/>
+
+<link rel="stylesheet" type="text/css" href="${URLUtils.staticURL('/css/k.css')}" />  
+
+<div class="kaxsdc" data-event="load">
+    <script src="${DC_url}/collect/sdk?m=${merchantId}&s=${sessionId}"></script>
+    <script>
+        var client=new ka.ClientSDK();
+        client.autoLoadEvents();
+    </script>
+</div>

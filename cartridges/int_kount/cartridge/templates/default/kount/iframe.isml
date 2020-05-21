@@ -1,0 +1,14 @@
+<!--- TEMPLATENAME: iframe.isml --->
+<isset name="kount" value="${require('*/cartridge/scripts/kount/libKount')}" scope="page"/>
+
+<isset name="sessionId" value="${require('*/cartridge/scripts/kount/libKount').getSessionIframe(pdict.CurrentSession.sessionID, pdict.Basket.getUUID())}" scope="page"/>
+<isset name="merchantId" value="${kount.getMerchantID()}" scope="page"/>
+<isset name="DC_url" value="${kount.getDCUrl()}" scope="page"/>
+
+<link rel="stylesheet" type="text/css" href="${URLUtils.staticURL('/css/k.css')}" />  
+
+<div <isif condition="${DC_url.indexOf('tst') != -1}">class="iframe_test"</isif> >
+<iframe width=1 height=1 frameborder=0 scrolling=no src="${dw.web.URLUtils.https('K-Image', 'm', merchantId, 's', sessionId)}">
+	<img width=1 height=1 src="${dw.web.URLUtils.https('K-Image', 'm', merchantId, 's', sessionId)}">
+</iframe>
+</div>

@@ -1,0 +1,8 @@
+<!--- TEMPLATENAME: logo.isml --->
+<isset name="kount" value="${require('*/cartridge/scripts/kount/libKount')}" scope="page"/>
+
+<isset name="merchantId" value="${kount.getMerchantID()}" scope="page"/>
+<isset name="sessionId" value="${pdict.CurrentHttpParameterMap.s.stringValue}" scope="page"/>
+<isset name="url" value="${kount.getDCUrl()+'/logo.htm?m='+merchantId+'&s='+sessionId}" scope="page"/>
+
+<isredirect location="${url}" permanent="false">
