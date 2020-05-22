@@ -17,7 +17,7 @@
 
 </head>
 <body>  
-	<p>Site Name - <isprint value="${pdict.SiteName}" encoding="on"/></p>
-	<p>Errors description - <isprint value="${pdict.ErrorDescription}" encoding="on"/></p>
+	<p>${Resource.msg('kount.sitename','kount',null)} - <isprint value="${pdict.SiteName}" encoding="on"/></p>
+	<p>${Resource.msg('kount.errorsdescription','kount',null)} - <isprint value="${pdict.ErrorDescription}" encoding="on"/></p>
 </body>
 </html>
