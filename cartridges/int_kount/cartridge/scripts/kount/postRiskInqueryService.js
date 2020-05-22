@@ -24,9 +24,10 @@ var responseArgs = {
     'Order': Object,
     'OrderID': String
   }}
+ * @param {boolean} preRiskCall whether this is a pre risk call
  * @returns {Object} {{KountOrderStatus: string, responseRIS: string}}
  */
-function init(args) {
+function init(args, preRiskCall) {
     var kount = require('*/cartridge/scripts/kount/libKount');
     var KHash = require('*/cartridge/scripts/kount/kHash');
     var request = args.CurrentRequest;
@@ -159,7 +160,7 @@ function init(args) {
         }
     }
     var RequiredInquiryKeysVal;
-    if (constants.RISK_WORKFLOW_TYPE === constants.RISK_WORKFLOW_TYPE_PRE && orderID && args.Order.custom.kount_Status.value !== 'RETRY') {
+    if (constants.RISK_WORKFLOW_TYPE === constants.RISK_WORKFLOW_TYPE_PRE && !preRiskCall && orderID && args.Order.custom.kount_Status.value !== 'RETRY') {
         RequiredInquiryKeysVal = {
             AUTH: Resource.msg('kount.AUTH', 'kount', null),
             AVST: constants.ALLOWED_VERIFICATION_VALUES.indexOf(order.custom.kount_AVST) > -1 ? order.custom.kount_AVST : 'X',
@@ -239,7 +240,7 @@ function init(args) {
     try {
         var response = kount.postRISRequest(RequiredInquiryKeysVal);
         if (!empty(response)) {
-            if (constants.RISK_WORKFLOW_TYPE === constants.RISK_WORKFLOW_TYPE_PRE && orderID && args.Order.custom.kount_Status.value !== 'RETRY') {
+            if (constants.RISK_WORKFLOW_TYPE === constants.RISK_WORKFLOW_TYPE_PRE && !preRiskCall && orderID && args.Order.custom.kount_Status.value !== 'RETRY') {
                 responseArgs.KountOrderStatus = args.Order.custom.kount_Status.value;
             } else {
                 responseArgs.KountOrderStatus = kount.evaluateRISResponse(response);

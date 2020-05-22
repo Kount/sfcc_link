@@ -5,6 +5,7 @@ var server = require('server');
 var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
 var Kount = require('*/cartridge/scripts/kount/libKount');
 var Transaction = require('dw/system/Transaction');
+var OrderMgr = require('dw/order/OrderMgr');
 var page = module.superModule;
 server.extend(page);
 
@@ -17,9 +18,7 @@ server.append(
     function (req, res, next) {
         this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
             var BasketMgr = require('dw/order/BasketMgr');
-            var Resource = require('dw/web/Resource');
             var currentBasket = BasketMgr.getCurrentBasket();
-            var billingForm = server.forms.getForm('billing');
             var billingData = res.getViewData();
 
             if (billingData.storedPaymentUUID
@@ -34,30 +33,6 @@ server.append(
                 Transaction.wrap(function () {
                     currentBasket.custom.kount_KHash = paymentInstrument.raw.custom.kount_KHash || null;
                 });
-            }
-
-            var RISresult = Kount.preRiskCall(currentBasket, null, true);
-            var result = {};
-
-            if (RISresult && RISresult.KountOrderStatus === 'DECLINED') {
-                result = {
-                    error: true,
-                    fieldErrors: [],
-                    serverErrors: [Resource.msg('kount.DECLINED', 'kount', null)]
-                };
-            }
-
-            // need to invalidate credit card fields
-            if (result.error) {
-                delete billingData.paymentInformation;
-
-                res.json({
-                    form: billingForm,
-                    fieldErrors: result.fieldErrors,
-                    serverErrors: result.serverErrors,
-                    error: true
-                });
-                return;
             }
         });
         return next();
@@ -183,8 +158,30 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
         return next();
     }
 
+    var RISresult = Kount.preRiskCall(order, true);
+
+    if (RISresult && RISresult.KountOrderStatus === 'DECLINED') {
+        Transaction.wrap(function () {
+            OrderMgr.failOrder(order);
+        });
+        res.json({
+            error: true,
+            errorMessage: Resource.msg('error.technical', 'checkout', null)
+        });
+        return next();
+    }
     // Handles payment authorization
     var handlePaymentResult = Kount.postRiskCall(COHelpers.handlePayments, order, true);
+    if (RISresult && RISresult.KountOrderStatus === 'DECLINED') {
+        Transaction.wrap(function () {
+            OrderMgr.failOrder(order);
+        });
+        res.json({
+            error: true,
+            errorMessage: Resource.msg('error.technical', 'checkout', null)
+        });
+        return next();
+    }
     if (handlePaymentResult.error) {
         res.json({
             error: true,

@@ -11,8 +11,6 @@ var Mail = require('dw/net/Mail');
 var ObjectAttributeDefinition = require('dw/object/ObjectAttributeDefinition');
 var Resource = require('dw/web/Resource');
 var StringUtils = require('dw/util/StringUtils');
-var OrderMgr = require('dw/order/OrderMgr');
-var Basket = require('dw/order/Basket');
 var Transaction = require('dw/system/Transaction');
 var CustomObjectMgr = require('dw/object/CustomObjectMgr');
 var Calendar = require('dw/util/Calendar');
@@ -476,12 +474,13 @@ function getUDFFields(order) {
 
 /**
  * @description Call Kount with data from DataCollector and custom order data
- * @param {Order} Order order for risk call
+ * @param {Order} order order for risk call
  * @param {boolean} isSfra whether sfra mode should be used
+ * @param {boolean} isPreRiskCall whether this is a pre risk call
  * @returns {Object} risk result
  * @constructor
  */
-function postRIS(Order, isSfra) {
+function postRIS(order, isSfra, isPreRiskCall) {
     var serviceData = {};
     var hashedCCNumber = '';
     var creditCardNumber;
@@ -493,9 +492,9 @@ function postRIS(Order, isSfra) {
 
         if (session.customer.authenticated
             && (creditCardNumber == null)	// if using saved credit card
-            && Order.custom.kount_KHash		// and hash is already in order custom attribute
+            && order.custom.kount_KHash		// and hash is already in order custom attribute
         ) {
-            hashedCCNumber = Order.custom.kount_KHash;	// use saved hash
+            hashedCCNumber = order.custom.kount_KHash;	// use saved hash
             var paymentInstruments = session.customer.profile.wallet.paymentInstruments;
             var array = require('*/cartridge/scripts/util/array');
             var paymentInstrument = array.find(paymentInstruments, function (item) {
@@ -509,15 +508,15 @@ function postRIS(Order, isSfra) {
         // set serviceData
         serviceData = {
             SessionID: session.privacy.sessId,
-            Email: Order.customerEmail,
+            Email: order.customerEmail,
             PaymentType: session.forms.billing.paymentMethod.value,
             CreditCard: {
                 HashedCardNumber: hashedCCNumber,
                 Last4: last4
             },
             CurrentRequest: request,
-            Order: Order,
-            OrderID: Order.constructor !== Basket ? Order.orderNo : null
+            Order: order,
+            OrderID: order.orderNo
         };
     } else {
         creditCardNumber = session.forms.billing.paymentMethods.creditCard.number.value;
@@ -532,37 +531,33 @@ function postRIS(Order, isSfra) {
                 Last4: last4
             },
             CurrentRequest: request,
-            Order: Order,
-            OrderID: Order.constructor !== Basket ? Order.orderNo : null
+            Order: order,
+            OrderID: order.orderNo
         };
     }
-    var riskResult = RiskService.init(serviceData);
+    var riskResult = RiskService.init(serviceData, isPreRiskCall);
 
-    UpdateOrder.init(Order, riskResult, hashedCCNumber, session.privacy.sessId);
+    UpdateOrder.init(order, riskResult, hashedCCNumber, session.privacy.sessId);
 
     return riskResult;
 }
 
 /**
  * @description Call Kount with data from DataCollector and custom order data
- * @param {Basket} basket basket for risk call
- * @param {Function} callback function to call when complete
+ * @param {Order} order order for risk call
  * @param {boolean} isSfra whether sfra mode should be used
  * @returns {Object} risk result
  */
-function preRiskCall(basket, callback, isSfra) {
-    var data = basket.constructor === Basket ? basket : basket.object;
+function preRiskCall(order, isSfra) {
+    var data = order;
     if (isKountEnabled() && authType === constants.RISK_WORKFLOW_TYPE_PRE) {
         try {
-            var result = postRIS(data, isSfra);
+            var result = postRIS(data, isSfra, true);
             if (!empty(result.KountOrderStatus) && result.KountOrderStatus === 'DECLINED') {
-                if (callback) {	// sfra doesn't need callback
-                    callback({
-                        KountOrderStatus: result.KountOrderStatus,
-                        order_created: false
-                    });
-                }
-                return result;
+                return {
+                    KountOrderStatus: result.KountOrderStatus,
+                    error: true
+                };
             }
             session.privacy.kount_TRAN = result.responseRIS && result.responseRIS.TRAN;
             return result;
@@ -600,31 +595,23 @@ function simulateVerifications(ord) {
 function postRiskCall(paymentCallback, order, isSfra) {
     if (isKountEnabled()) {
         simulateVerifications(order);
-        var handleCallResult = function (result) {
-            if (!empty(result.KountOrderStatus) && result.KountOrderStatus === 'DECLINED') {
-                Transaction.wrap(function () {
-                    OrderMgr.failOrder(order);
-                });
-
-                return {
-                    KountOrderStatus: result.KountOrderStatus,
-                    error: true
-                };
-            }
-            return result;
-        };
         var orderNo = isSfra ? order.orderNo : undefined;
         var paymentResult = paymentCallback(order, orderNo);
         var params;
         if (paymentResult && paymentResult.error) {
             params = KountUtils.extend({}, paymentResult);
         } else {
-            params = KountUtils.extend(postRIS(order, isSfra), paymentResult);
+            params = KountUtils.extend(postRIS(order, isSfra, false), paymentResult);
         }
-        var result = handleCallResult(params);
+        if (!empty(params.KountOrderStatus) && params.KountOrderStatus === 'DECLINED') {
+            params = {
+                KountOrderStatus: params.KountOrderStatus,
+                error: true
+            };
+        }
         // clear session variable 'TRAN' for 'PRE' auth.
         _clearSession();
-        return result;
+        return params;
     }
     writeExecutionError(new Error('KOUNT: K.js: Kount is not enabled'), 'PostRIS', 'info');
     _clearSession();
