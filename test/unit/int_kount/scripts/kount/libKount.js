@@ -532,26 +532,15 @@ describe('LibKount', function () {
     });
 
     describe('preRiskCall and postRiskCall functions', function () {
-        it('preRiskCall function should throw an error', function () {
-            var callback = sinon.spy();
-            LibKount.preRiskCall(orderMock, callback, true);
-            assert.isTrue(logErrorFunction.called);
-        });
-
-        it('preRiskCall function should return DECLINED status and call a callback', function () {
-            orderMock.constructor = BasketClassMock;
-            var callback = sinon.spy();
-            var result = LibKount.preRiskCall(orderMock, callback, true);
+        it('preRiskCall function should return DECLINED status', function () {
+            var result = LibKount.preRiskCall(orderMock, true);
             assert.equal(result.KountOrderStatus, 'DECLINED');
-            assert.isTrue(callback.called);
-            assert.equal(callback.args[0][0].KountOrderStatus, 'DECLINED');
         });
 
-        it('postRiskCall function should return DECLINED status and fail order', function () {
+        it('postRiskCall function should return DECLINED status', function () {
             var callback = sinon.spy();
             var result = LibKount.postRiskCall(callback, orderMock, true);
             assert.equal(result.KountOrderStatus, 'DECLINED');
-            assert.isTrue(OrderMgrMock.failOrder.called);
             assert.isTrue(callback.called);
         });
     });
