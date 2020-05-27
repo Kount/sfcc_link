@@ -172,15 +172,10 @@ server.replace('PlaceOrder', server.middleware.https, function (req, res, next) 
     }
     // Handles payment authorization
     var handlePaymentResult = Kount.postRiskCall(COHelpers.handlePayments, order, true);
-    if (RISresult && RISresult.KountOrderStatus === 'DECLINED') {
+    if (handlePaymentResult && handlePaymentResult.KountOrderStatus === 'DECLINED') {
         Transaction.wrap(function () {
             OrderMgr.failOrder(order);
         });
-        res.json({
-            error: true,
-            errorMessage: Resource.msg('error.technical', 'checkout', null)
-        });
-        return next();
     }
     if (handlePaymentResult.error) {
         res.json({
