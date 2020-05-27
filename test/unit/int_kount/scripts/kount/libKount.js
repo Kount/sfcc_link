@@ -297,7 +297,6 @@ describe('LibKount', function () {
     beforeEach(function () {
         LibKount = proxyquire('../../../../../cartridges/int_kount/cartridge/scripts/kount/libKount.js', {
             'dw/web/URLUtils': urlUtilsMock,
-            'dw/svc/ServiceRegistry': {},
             'dw/system/Logger': LoggerMock,
             'dw/system/Site': {
                 current: siteMock
