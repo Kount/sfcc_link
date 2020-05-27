@@ -96,7 +96,7 @@ function execute(args) { // eslint-disable-line
                             var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
                             COHelpers.sendConfirmationEmail(order, request.locale.id); // eslint-disable-line
                         } else {
-                            var controllersApp = kount.getCoreScript('app');
+                            var controllersApp = require('*/cartridge/scripts/app');
                             var Resource = require('dw/web/Resource');
                             var EmailModel = controllersApp.getModel('Email');
                             EmailModel.sendMail({

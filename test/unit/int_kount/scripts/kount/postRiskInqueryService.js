@@ -245,7 +245,7 @@ var libKountMock = {
         return 'MerchantID';
     },
     writeExecutionError: function () {},
-    PostRISRequest: function (data) {
+    postRISRequest: function (data) {
         return data;
     },
     getWebsiteID: function () {
