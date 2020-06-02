@@ -153,6 +153,16 @@ function start() {
 
         return {};
     }
+    var RISresult = Kount.preRiskCall(order, null, false);
+    if (RISresult && RISresult.KountOrderStatus === 'DECLINED') {
+        Transaction.wrap(function () {
+            OrderMgr.failOrder(order);
+        });
+        return {
+            error: true,
+            PlaceOrderError: new Status(Status.ERROR, 'confirm.error.technical')
+        };
+    }
     var handlePaymentsResult = Kount.postRiskCall(handlePayments, order);
 
     if (handlePaymentsResult.error) {
