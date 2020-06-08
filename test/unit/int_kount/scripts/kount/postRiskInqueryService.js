@@ -296,6 +296,9 @@ describe('PostRiskInqueryService', function () {
             '*/cartridge/scripts/kount/kHash': {
                 hashGiftCard: function (data) {
                     return data;
+                },
+                hash: function (data) {
+                    return data;
                 }
             }
         });

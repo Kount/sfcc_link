@@ -501,7 +501,7 @@ function postRIS(order, isSfra, isPreRiskCall) {
                 return hashedCCNumber === item.custom.kount_KHash;
             });
             last4 = paymentInstrument ? paymentInstrument.creditCardNumber.substr(paymentInstrument.creditCardNumber.length - 4) : '';
-        } else {
+        } else if (creditCardNumber) {
             last4 = creditCardNumber.substr(creditCardNumber.length - 4);
             hashedCCNumber = KHash.hashPaymentToken(creditCardNumber);	// else hash CC number from form
         }

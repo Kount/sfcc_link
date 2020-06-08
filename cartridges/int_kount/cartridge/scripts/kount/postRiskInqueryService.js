@@ -53,7 +53,7 @@ function init(args, preRiskCall) {
         BML: '',
         CREDIT_CARD: creditCard.HashedCardNumber,
         GIFT_CERTIFICATE: payInstr ? KHash.hashGiftCard(payInstr.getGiftCertificateCode()) : '',
-        PayPal: payInstr && 'paypalPayerID' in payInstr.custom && !empty(payInstr.custom.paypalPayerID) ? payInstr.custom.paypalPayerID : ''
+        PayPal: payInstr && 'paypalPayerID' in payInstr.custom && !empty(payInstr.custom.paypalPayerID) ? KHash.hash(payInstr.custom.paypalPayerID) : ''
     };
     var paymentType = 'NONE';
     var paymentToken = null;
