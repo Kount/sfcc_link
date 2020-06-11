@@ -1,5 +1,5 @@
 <!--- TEMPLATENAME: logo.isml --->
-<isset name="kount" value="${require('*/cartridge/scripts/kount/LibKount')}" scope="page"/>
+<isset name="kount" value="${require('*/cartridge/scripts/kount/libKount')}" scope="page"/>
 
 <isset name="merchantId" value="${kount.getMerchantID()}" scope="page"/>
 <isset name="sessionId" value="${pdict.CurrentHttpParameterMap.s.stringValue}" scope="page"/>

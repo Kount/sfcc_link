@@ -21,10 +21,10 @@ var app = require('*/cartridge/scripts/app');
 var guard = require('*/cartridge/scripts/guard');
 
 /* Kount */
-var Kount = require('int_kount/cartridge/scripts/kount/LibKount');
+var Kount = require('*/cartridge/scripts/kount/libKount');
 
 var Cart = app.getModel('Cart');
-var Order = app.getModel('Order');
+var Order = require('*/cartridge/scripts/models/OrderModel');
 var PaymentProcessor = app.getModel('PaymentProcessor');
 
 /**
@@ -152,6 +152,16 @@ function start() {
         app.getController('Cart').Show();
 
         return {};
+    }
+    var RISresult = Kount.preRiskCall(order, null, false);
+    if (RISresult && RISresult.KountOrderStatus === 'DECLINED') {
+        Transaction.wrap(function () {
+            OrderMgr.failOrder(order);
+        });
+        return {
+            error: true,
+            PlaceOrderError: new Status(Status.ERROR, 'confirm.error.technical')
+        };
     }
     var handlePaymentsResult = Kount.postRiskCall(handlePayments, order);
 

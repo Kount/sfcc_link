@@ -17,9 +17,9 @@ var logger = require('dw/system/Logger').getLogger('kount', '');
  * @returns {dw.system.Status} status object
  */
 function execute(args) { // eslint-disable-line
-    var RiskService = require('*/cartridge/scripts/kount/PostRiskInqueryService');
-    var UpdateOrder = require('*/cartridge/scripts/kount/UpdateOrder');
-    var kount = require('*/cartridge/scripts/kount/LibKount');
+    var RiskService = require('*/cartridge/scripts/kount/postRiskInqueryService');
+    var UpdateOrder = require('*/cartridge/scripts/kount/updateOrder');
+    var kount = require('*/cartridge/scripts/kount/libKount');
     try {
         var maxOrderRetries = Site.current.getCustomPreferenceValue('kount_OrderMaxRetries');
         var queryStr = 'custom.kount_Status={0} AND exportStatus={1}';
@@ -96,7 +96,7 @@ function execute(args) { // eslint-disable-line
                             var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
                             COHelpers.sendConfirmationEmail(order, request.locale.id); // eslint-disable-line
                         } else {
-                            var controllersApp = kount.getCoreScript('app');
+                            var controllersApp = require('*/cartridge/scripts/app');
                             var Resource = require('dw/web/Resource');
                             var EmailModel = controllersApp.getModel('Email');
                             EmailModel.sendMail({

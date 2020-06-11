@@ -3,3 +3,4 @@ documentation/
 metadata/
 cartridges/int_kount/cartridge/static/
 cartridges/kount_sg_changes/
+coverage/

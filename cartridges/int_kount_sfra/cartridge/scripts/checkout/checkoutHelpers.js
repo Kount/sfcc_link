@@ -16,7 +16,7 @@ var Transaction = require('dw/system/Transaction');
  * @returns {dw.customer.CustomerPaymentInstrument} newly stored payment Instrument
  */
 function savePaymentInstrumentToWallet(billingData, currentBasket, customer) {
-    var KHash = require('int_kount/cartridge/scripts/kount/KHash');
+    var KHash = require('*/cartridge/scripts/kount/kHash');
     var wallet = customer.getProfile().getWallet();
 
     return Transaction.wrap(function () {

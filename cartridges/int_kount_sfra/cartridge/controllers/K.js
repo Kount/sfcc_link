@@ -8,7 +8,7 @@ var server = require('server');
 var BasketMgr = require('dw/order/BasketMgr');
 
 // Tools
-var kount = require('int_kount/cartridge/scripts/kount/LibKount');
+var kount = require('*/cartridge/scripts/kount/libKount');
 
 /**
  * @description Collect info about user on the billing page.
@@ -26,15 +26,14 @@ server.use('DataCollector', function (req, res, next) {
                 });
                 return next();
             }
-            session.custom.sessId = session.sessionID.substr(0, 24).replace('-', '_', 'g') + basket.getUUID().substr(0, 8).replace('-', '_', 'g');
+            session.privacy.sessId = session.sessionID.substr(0, 24).replace('-', '_', 'g') + basket.getUUID().substr(0, 8).replace('-', '_', 'g');
         } else {
             kount.writeExecutionError(new Error("KOUNT: K.js: Can't get user IP"), 'DataCollector', 'error');
-            res.json({ error: 'Can\'t get user IP' });
-            return next();
+            res.render('kount/emptyTemplate');
         }
     } else {
         kount.writeExecutionError(new Error('KOUNT: K.js: Kount is not enabled'), 'DataCollector', 'info');
-        res.json({ error: 'KOUNT: K.js: Kount is not enabled' });
+        res.render('kount/emptyTemplate');
     }
     return next();
 });

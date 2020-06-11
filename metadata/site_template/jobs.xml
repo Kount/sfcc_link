@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jobs xmlns="http://www.demandware.com/xml/impex/jobs/2015-07-01">
+    <job job-id="Kount-Retry" priority="0">
+        <description>Kount Retry job</description>
+        <parameters/>
+        <split sequential="false">
+            <contexts template-ref="template_24">
+                <context site-id="RefArch"/>
+                <context site-id="RefArchGlobal"/>
+                <context site-id="SiteGenesis"/>
+                <context site-id="SiteGenesisGlobal"/>
+            </contexts>
+            <flow-template template-id="template_24">
+                <step step-id="kountRetry" type="ExecuteScriptModule" enforce-restart="false">
+                    <description>Kount Retry</description>
+                    <parameters>
+                        <parameter name="ExecuteScriptModule.Module">int_kount/cartridge/scripts/jobs/kountRetry.js</parameter>
+                        <parameter name="ExecuteScriptModule.FunctionName">execute</parameter>
+                        <parameter name="ExecuteScriptModule.Transactional">false</parameter>
+                    </parameters>
+                </step>
+            </flow-template>
+        </split>
+        <rules/>
+        <triggers>
+            <run-recurring enabled="true">
+                <recurrence>
+                    <date-from>2020-04-01Z</date-from>
+                    <start-time>04:00:00.000Z</start-time>
+                    <interval>30m</interval>
+                    <day-of-week/>
+                </recurrence>
+            </run-recurring>
+        </triggers>
+    </job>
+    <job job-id="Kount-ProcessENSQueue" priority="0">
+        <description/>
+        <parameters/>
+        <flow>
+            <context site-id="RefArch"/>
+            <step step-id="process-ens-records" type="ExecuteScriptModule" enforce-restart="false">
+                <description/>
+                <parameters>
+                    <parameter name="ExecuteScriptModule.Module">int_kount/cartridge/scripts/jobs/processKountENSQueue.js</parameter>
+                    <parameter name="ExecuteScriptModule.FunctionName">execute</parameter>
+                    <parameter name="ExecuteScriptModule.Transactional">true</parameter>
+                </parameters>
+            </step>
+        </flow>
+        <rules/>
+        <triggers>
+            <run-recurring enabled="true">
+                <recurrence>
+                    <date-from>2020-01-01Z</date-from>
+                    <start-time>00:00:00.000Z</start-time>
+                    <interval>10m</interval>
+                    <day-of-week>
+                        <weekday>Sunday</weekday>
+                        <weekday>Tuesday</weekday>
+                        <weekday>Monday</weekday>
+                        <weekday>Wednesday</weekday>
+                        <weekday>Thursday</weekday>
+                        <weekday>Saturday</weekday>
+                        <weekday>Friday</weekday>
+                    </day-of-week>
+                </recurrence>
+            </run-recurring>
+        </triggers>
+    </job>
+</jobs>

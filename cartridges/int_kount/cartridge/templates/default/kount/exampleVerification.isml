@@ -1,0 +1,36 @@
+<iscontent type="text/html" charset="UTF-8" compact="true"/>
+<iscomment> TEMPLATENAME: kount/exampleverification.isml </iscomment>
+
+
+<div style="text-align: left;" class="kount-test-verification">
+
+	<h3>${Resource.msg('kount.exampleverification.intromessage','kount',null)}</h3>
+	
+	<div>
+		${Resource.msg('kount.addressverificationstreet.message','kount',null)}
+		<select name="kountTestAVST" class="kount-selector">
+			<option value="X">${Resource.msg('kount.unsupported','kount',null)}</option>
+			<option value="M">${Resource.msg('kount.match','kount',null)}</option>
+			<option value="N">${Resource.msg('kount.notmatch','kount',null)}</option>
+		</select>
+	</div>
+	
+	<div>
+		${Resource.msg('kount.addressverificationzip.message','kount',null)}
+		<select name="kountTestAVSZ" class="kount-selector">
+			<option value="X">${Resource.msg('kount.unsupported','kount',null)}</option>
+			<option value="M">${Resource.msg('kount.match','kount',null)}</option>
+			<option value="N">${Resource.msg('kount.notmatch','kount',null)}</option>
+		</select>
+	</div>
+	
+	<div>
+		${Resource.msg('kount.cardverification.message','kount',null)}
+		<select name="kountTestCVVR" class="kount-selector">
+			<option value="X">${Resource.msg('kount.unsupported','kount',null)}</option>
+			<option value="M">${Resource.msg('kount.match','kount',null)}</option>
+			<option value="N">${Resource.msg('kount.notmatch','kount',null)}</option>
+		</select>
+	</div>
+
+</div>

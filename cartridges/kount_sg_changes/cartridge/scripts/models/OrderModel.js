@@ -6,7 +6,7 @@
 */
 
 /* API Includes */
-var AbstractModel = require('./AbstractModel');
+var AbstractModel = require('*/cartridge/scripts/models/AbstractModel');
 var Order = require('dw/order/Order');
 var OrderMgr = require('dw/order/OrderMgr');
 var Resource = require('dw/web/Resource');
@@ -14,7 +14,7 @@ var Status = require('dw/system/Status');
 var Transaction = require('dw/system/Transaction');
 
 /* Kount */
-var Kount = require('int_kount/cartridge/scripts/kount/LibKount');
+var Kount = require('*/cartridge/scripts/kount/libKount');
 
 
 /**
@@ -87,8 +87,8 @@ OrderModel.get = function (parameter) {
  * @return {Object} object If order cannot be placed, object.error is set to true. Ortherwise, object.order_created is true, and object.Order is set to the order.
  */
 OrderModel.submit = function (order, kountStatus) {
-    var Email = require('./EmailModel');
-    var GiftCertificate = require('./GiftCertificateModel');
+    var Email = require('*/cartridge/scripts/models/EmailModel');
+    var GiftCertificate = require('*/cartridge/scripts/models/GiftCertificateModel');
     try {
         Transaction.begin();
         placeOrder(order, kountStatus);
