@@ -5,6 +5,7 @@
 var Site = require('dw/system/Site');
 var Resource = require('dw/web/Resource');
 var Encoding = require('dw/crypto/Encoding');
+var Logger = require('dw/system/Logger').getLogger('kount', 'LibKount');
 
 // scripts
 var constants = require('*/cartridge/scripts/kount/kountConstants');
@@ -174,7 +175,7 @@ function init(args, preRiskCall) {
             SESS: sessID,
             ORDR: orderID,
             TRAN: session.privacy.kount_TRAN,
-            VERS: Resource.msg('kount.VERS', 'kount', '0630')
+            VERS: Resource.msg('kount.VERS', 'kount', '0710')
         };
         if (payMethod == 'CREDIT_CARD') { //eslint-disable-line
             RequiredInquiryKeysVal.LAST4 = creditCard.Last4 || null;
@@ -193,12 +194,10 @@ function init(args, preRiskCall) {
             PROD_PRICE: ProdPriceVals,
             PROD_QUANT: ProdQuantVals,
             PROD_TYPE: ProdTypeVals,
-            PTOK: paymentToken || '',
-            PTYP: paymentType,
             SESS: sessID,
             SITE: kount.getWebsiteID(),
             TOTL: totalPrice,
-            VERS: Resource.msg('kount.VERS', 'kount', '0630'), // Provided by Kount
+            VERS: Resource.msg('kount.VERS', 'kount', '0710'), // Provided by Kount
             // Optional keys
             AVST: constants.ALLOWED_VERIFICATION_VALUES.indexOf(order.custom.kount_AVST) > -1 ? order.custom.kount_AVST : 'X',
             AVSZ: constants.ALLOWED_VERIFICATION_VALUES.indexOf(order.custom.kount_AVSZ) > -1 ? order.custom.kount_AVSZ : 'X',
@@ -229,11 +228,22 @@ function init(args, preRiskCall) {
             UDF: kount.getUDFFields(order),
             EPOC: customerCreateDate
         };
-        if (!empty(paymentToken) || payMethod == 'CREDIT_CARD') { //eslint-disable-line
-            RequiredInquiryKeysVal.PENC = 'KHASH';
-        }
-        if (payMethod == 'CREDIT_CARD') { //eslint-disable-line
-            RequiredInquiryKeysVal.LAST4 = creditCard.Last4 || null;
+        // Some extra handling is required for Credit Card payment types.
+        if (payMethod == "CREDIT_CARD") {
+            // If we have a payment token, populate the required RIS fields.
+            if(!empty(paymentToken)) {
+                RequiredInquiryKeysVal.PTOK = paymentToken;
+                RequiredInquiryKeysVal.PTYP = paymentType;
+                RequiredInquiryKeysVal.PENC = 'KHASH';
+                RequiredInquiryKeysVal.LAST4 = creditCard.Last4 || null;
+                // Otherwise, set the PTYP to none.
+            } else {
+                RequiredInquiryKeysVal.PTYP = 'NONE';
+                Logger.warn("The payment token was empty for a CREDIT_CARD payment Type.  Setting the PTYP to NONE when submitting to Kount.");
+            }
+        } else {
+            RequiredInquiryKeysVal.PTOK = paymentToken ? paymentToken : '';
+            RequiredInquiryKeysVal.PTYP = paymentType;
         }
     }
 
