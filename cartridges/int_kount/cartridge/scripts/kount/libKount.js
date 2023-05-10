@@ -578,9 +578,9 @@ function simulateVerifications(ord) {
     var order = ord;
     if (isExampleVerificationsEnabled()) {
         Transaction.wrap(function () {
-            order.custom.kount_AVST = request.httpParameterMap.kountTestAVST ? request.httpParameterMap.kountTestAVST.value : 'X';
-            order.custom.kount_AVSZ = request.httpParameterMap.kountTestAVSZ ? request.httpParameterMap.kountTestAVSZ.value : 'X';
-            order.custom.kount_CVVR = request.httpParameterMap.kountTestCVVR ? request.httpParameterMap.kountTestCVVR.value : 'X';
+            order.custom.kount_AVST = session.privacy.kountTestAVST || 'X';
+            order.custom.kount_AVSZ = session.privacy.kountTestAVSZ || 'X';
+            order.custom.kount_CVVR = session.privacy.kountTestCVVR || 'X';
         });
     }
 }

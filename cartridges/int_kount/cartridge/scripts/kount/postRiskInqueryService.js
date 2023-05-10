@@ -184,7 +184,7 @@ function init(args, preRiskCall) {
         RequiredInquiryKeysVal = {
             AUTH: Resource.msg('kount.AUTH', 'kount', null), // For it need imported certificate to Bussiness Manager
             CURR: Site.getCurrent().getDefaultCurrency(),
-            EMAL: customerEmail,
+            EMAL: Encoding.toURI(customerEmail),
             IPAD: IP,
             MACK: Resource.msg('kount.MACK', 'kount', 'Y'),
             MERC: kount.getMerchantID(),

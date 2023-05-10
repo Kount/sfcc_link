@@ -142,7 +142,11 @@ function start() {
             PlaceOrderError: new Status(Status.ERROR, 'confirm.error.technical')
         };
     }
-
+    if (Kount.isKountEnabled() && Kount.isExampleVerificationsEnabled()) {
+        session.privacy.kountTestAVST = request.httpParameterMap.kountTestAVST || 'X';
+        session.privacy.kountTestAVSZ = request.httpParameterMap.kountTestAVSZ || 'X';
+        session.privacy.kountTestCVVR = request.httpParameterMap.kountTestCVVR || 'X';
+    }
     // Creates a new order. This will internally ReserveInventoryForOrder and will create a new Order with status
     // 'Created'.
     var order = cart.createOrder();

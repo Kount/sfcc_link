@@ -54,7 +54,7 @@ server.use('Image', function (req, res, next) {
  */
 server.use('ExampleVerification', function (req, res, next) {
     if (kount.isKountEnabled() && kount.isExampleVerificationsEnabled()) {
-        res.render('kount/exampleverification');
+        res.render('kount/exampleVerification');
     } else {
         res.render('kount/emptyTemplate');
     }
