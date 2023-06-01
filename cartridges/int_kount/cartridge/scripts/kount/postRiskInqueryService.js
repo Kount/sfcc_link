@@ -228,22 +228,21 @@ function init(args, preRiskCall) {
             UDF: kount.getUDFFields(order),
             EPOC: customerCreateDate
         };
-        // Some extra handling is required for Credit Card payment types.
-        if (payMethod == "CREDIT_CARD") {
+
+        if (!empty(paymentToken)) {
             // If we have a payment token, populate the required RIS fields.
-            if(!empty(paymentToken)) {
+            if (payMethod == "CREDIT_CARD") {
                 RequiredInquiryKeysVal.PTOK = paymentToken;
                 RequiredInquiryKeysVal.PTYP = paymentType;
                 RequiredInquiryKeysVal.PENC = 'KHASH';
                 RequiredInquiryKeysVal.LAST4 = creditCard.Last4 || null;
-                // Otherwise, set the PTYP to none.
             } else {
-                RequiredInquiryKeysVal.PTYP = 'NONE';
-                Logger.warn("The payment token was empty for a CREDIT_CARD payment Type.  Setting the PTYP to NONE when submitting to Kount.");
+                RequiredInquiryKeysVal.PTOK = paymentToken;
+                RequiredInquiryKeysVal.PTYP = paymentType;
             }
-        } else {
-            RequiredInquiryKeysVal.PTOK = paymentToken ? paymentToken : '';
-            RequiredInquiryKeysVal.PTYP = paymentType;
+        } else { // Set payment to NONE in case token is missing
+            RequiredInquiryKeysVal.PTYP = 'NONE';
+            Logger.warn("The payment token was empty for a CREDIT_CARD payment Type.  Setting the PTYP to NONE when submitting to Kount.");
         }
     }
 
