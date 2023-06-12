@@ -45,7 +45,7 @@ function init(args, preRiskCall) {
     var customerName = !empty(profile) ? profile.getFirstName() + ' ' + profile.getSecondName() + ' ' + profile.getLastName() : billingAddr.getFullName();
     var customerEmail = !empty(profile) ? profile.getEmail() : email;
     var customerCreateDate = !empty(profile) ? Math.floor(profile.creationDate.valueOf() / 1000) : Math.floor((new Date()).valueOf() / 1000);
-    var shippingTypeMap = { Foreign: 'SD', Overnight: 'ND', '2-Day Express': '2D', Ground: 'ST', Express: '2D', USPS: 'ST', 'Super Saver': 'ST' };
+    var shippingTypeMap = { Foreign: 'SD', Overnight: 'ND', '2-Day Express': '2D', Ground: 'ST', Express: '2D', USPS: 'ST', 'Super Saver': 'ST', Delivery: 'DE', 'Pick-Up': 'PU' };
     var payInstrColl = order.getPaymentInstruments();
     var payInstr = kount.getPayment(payInstrColl);
     var creditCard = args.CreditCard;
