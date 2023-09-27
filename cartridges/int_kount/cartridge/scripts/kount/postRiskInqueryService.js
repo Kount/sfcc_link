@@ -246,6 +246,10 @@ function init(args, preRiskCall) {
         }
     }
 
+    // Add Kount version to the request
+    RequiredInquiryKeysVal.SDK = 'CUST';
+    RequiredInquiryKeysVal.SDK_VERSION = kount.isSFRA() ? Resource.msg('kount.sfra.version', 'kount', null) : Resource.msg('kount.sg.version', 'kount', null);
+
     try {
         var response = kount.postRISRequest(RequiredInquiryKeysVal);
         if (!empty(response)) {
