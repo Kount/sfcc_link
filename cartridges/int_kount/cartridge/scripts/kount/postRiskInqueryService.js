@@ -45,7 +45,7 @@ function init(args, preRiskCall) {
     var customerName = !empty(profile) ? profile.getFirstName() + ' ' + profile.getSecondName() + ' ' + profile.getLastName() : billingAddr.getFullName();
     var customerEmail = !empty(profile) ? profile.getEmail() : email;
     var customerCreateDate = !empty(profile) ? Math.floor(profile.creationDate.valueOf() / 1000) : Math.floor((new Date()).valueOf() / 1000);
-    var shippingTypeMap = { Foreign: 'SD', Overnight: 'ND', '2-Day Express': '2D', Ground: 'ST', Express: '2D', USPS: 'ST', 'Super Saver': 'ST' };
+    var shippingTypeMap = { Foreign: 'SD', Overnight: 'ND', '2-Day Express': '2D', Ground: 'ST', Express: '2D', USPS: 'ST', 'Super Saver': 'ST', Delivery: 'DE', 'Pick-Up': 'PU' };
     var payInstrColl = order.getPaymentInstruments();
     var payInstr = kount.getPayment(payInstrColl);
     var creditCard = args.CreditCard;
@@ -184,7 +184,7 @@ function init(args, preRiskCall) {
         RequiredInquiryKeysVal = {
             AUTH: Resource.msg('kount.AUTH', 'kount', null), // For it need imported certificate to Bussiness Manager
             CURR: Site.getCurrent().getDefaultCurrency(),
-            EMAL: customerEmail,
+            EMAL: Encoding.toURI(customerEmail),
             IPAD: IP,
             MACK: Resource.msg('kount.MACK', 'kount', 'Y'),
             MERC: kount.getMerchantID(),
@@ -228,24 +228,27 @@ function init(args, preRiskCall) {
             UDF: kount.getUDFFields(order),
             EPOC: customerCreateDate
         };
-        // Some extra handling is required for Credit Card payment types.
-        if (payMethod == "CREDIT_CARD") {
+
+        if (!empty(paymentToken)) {
             // If we have a payment token, populate the required RIS fields.
-            if(!empty(paymentToken)) {
+            if (payMethod == "CREDIT_CARD") {
                 RequiredInquiryKeysVal.PTOK = paymentToken;
                 RequiredInquiryKeysVal.PTYP = paymentType;
                 RequiredInquiryKeysVal.PENC = 'KHASH';
                 RequiredInquiryKeysVal.LAST4 = creditCard.Last4 || null;
-                // Otherwise, set the PTYP to none.
             } else {
-                RequiredInquiryKeysVal.PTYP = 'NONE';
-                Logger.warn("The payment token was empty for a CREDIT_CARD payment Type.  Setting the PTYP to NONE when submitting to Kount.");
+                RequiredInquiryKeysVal.PTOK = paymentToken;
+                RequiredInquiryKeysVal.PTYP = paymentType;
             }
-        } else {
-            RequiredInquiryKeysVal.PTOK = paymentToken ? paymentToken : '';
-            RequiredInquiryKeysVal.PTYP = paymentType;
+        } else { // Set payment to NONE in case token is missing
+            RequiredInquiryKeysVal.PTYP = 'NONE';
+            Logger.warn("The payment token was empty for a CREDIT_CARD payment Type.  Setting the PTYP to NONE when submitting to Kount.");
         }
     }
+
+    // Add Kount version to the request
+    RequiredInquiryKeysVal.SDK = 'CUST';
+    RequiredInquiryKeysVal.SDK_VERSION = kount.isSFRA() ? Resource.msg('kount.sfra.version', 'kount', null) : Resource.msg('kount.sg.version', 'kount', null);
 
     try {
         var response = kount.postRISRequest(RequiredInquiryKeysVal);

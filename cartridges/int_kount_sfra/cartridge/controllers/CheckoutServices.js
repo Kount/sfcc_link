@@ -16,6 +16,11 @@ server.extend(page);
 server.append(
     'SubmitPayment',
     function (req, res, next) {
+        if (Kount.isExampleVerificationsEnabled()) {
+            req.session.privacyCache.set('kountTestAVST', req.form.kountTestAVST);
+            req.session.privacyCache.set('kountTestAVSZ', req.form.kountTestAVSZ);
+            req.session.privacyCache.set('kountTestCVVR', req.form.kountTestCVVR);
+        }
         this.on('route:BeforeComplete', function (req, res) { // eslint-disable-line no-shadow
             var BasketMgr = require('dw/order/BasketMgr');
             var currentBasket = BasketMgr.getCurrentBasket();

@@ -51,7 +51,7 @@ function Image() {
  */
 function ExampleVerification() {
     if (kount.isKountEnabled() && kount.isExampleVerificationsEnabled()) {
-        ISML.renderTemplate('kount/exampleverification');
+        ISML.renderTemplate('kount/exampleVerification');
     }
 }
 
