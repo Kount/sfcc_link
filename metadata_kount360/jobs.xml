@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jobs xmlns="http://www.demandware.com/xml/impex/jobs/2015-07-01">
+    <job job-id="Kount360-ProcessWebhookQueue">
+        <description/>
+        <parameters/>
+        <flow>
+            <context site-id="RefArch"/>
+            <step step-id="process-webhook-queue" type="custom.Kount360.Process.Webhook.Queue" enforce-restart="false">
+                <description/>
+                <parameters/>
+            </step>
+        </flow>
+        <rules/>
+        <triggers>
+            <run-once enabled="false">
+                <date>2025-07-30Z</date>
+                <time>15:00:00.000Z</time>
+            </run-once>
+        </triggers>
+    </job>  
+</jobs>

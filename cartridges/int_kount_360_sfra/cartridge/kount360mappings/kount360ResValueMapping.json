@@ -1,0 +1,7 @@
+{
+    "AUTO": {
+        "APPROVE": "A",
+        "DECLINE": "D",
+        "REVIEW": "R"
+    }
+}

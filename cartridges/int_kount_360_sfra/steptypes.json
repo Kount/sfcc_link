@@ -1,0 +1,15 @@
+{
+    "step-types":
+    {
+        "script-module-step": [{
+			"@type-id": "custom.Kount360.Process.Webhook.Queue",
+            "description":"Processed pending Kount 360 hook request queue",
+			"module": "int_kount_360_sfra/cartridge/scripts/jobs/processKountWebhooksQueue.js",
+			"function": "execute",
+			"transactional": true,
+			"parameters": {
+				"parameters": []
+			}
+		}]
+    }
+}

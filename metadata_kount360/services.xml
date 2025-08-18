@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns="http://www.demandware.com/xml/impex/services/2014-09-26">
+    
+    <service-credential service-credential-id="kount360.api.credentials">
+        <url>https://api-sandbox.kount.com/commerce/v2/orders</url>
+        <user-id/>
+        <password encrypted="true" encryption-type="common.export">jkG+O4V1Oxq1BNqsZg8JKcpLqcCv66MOL7GUp/HForc=</password>
+    </service-credential>
+
+    <service-credential service-credential-id="kount360.auth.credentials">
+        <url>https://login.kount.com/oauth2/ausdppkujzCPQuIrY357/v1/token</url>
+        <user-id/>
+        <password encrypted="true" encryption-type="common.export">y52mqGQvW+BNHaFJ4iGs02fz1DZM1Xk1zh7cIqMEUuw=</password>
+    </service-credential>
+
+    <service-profile service-profile-id="kount.360.auth.profile">
+        <timeout-millis>1000</timeout-millis>
+        <rate-limit-enabled>false</rate-limit-enabled>
+        <rate-limit-calls>0</rate-limit-calls>
+        <rate-limit-millis>0</rate-limit-millis>
+        <cb-enabled>true</cb-enabled>
+        <cb-calls>0</cb-calls>
+        <cb-millis>0</cb-millis>
+    </service-profile>
+
+    <service-profile service-profile-id="kount360.api.profile">
+        <timeout-millis>5000</timeout-millis>
+        <rate-limit-enabled>false</rate-limit-enabled>
+        <rate-limit-calls>0</rate-limit-calls>
+        <rate-limit-millis>0</rate-limit-millis>
+        <cb-enabled>false</cb-enabled>
+        <cb-calls>0</cb-calls>
+        <cb-millis>0</cb-millis>
+    </service-profile>
+
+    <service service-id="kount360.auth.token">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>kount360-auth-token</log-prefix>
+        <comm-log-enabled>false</comm-log-enabled>
+        <force-prd-enabled>false</force-prd-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>kount360.api.profile</profile-id>
+        <credential-id>kount360.auth.credentials</credential-id>
+    </service>
+
+    <service service-id="kount360.rest.api">
+        <service-type>HTTP</service-type>
+        <enabled>true</enabled>
+        <log-prefix>kount360-rest-api</log-prefix>
+        <comm-log-enabled>false</comm-log-enabled>
+        <force-prd-enabled>false</force-prd-enabled>
+        <mock-mode-enabled>false</mock-mode-enabled>
+        <profile-id>kount360.api.profile</profile-id>
+        <credential-id>kount360.api.credentials</credential-id>
+    </service>
+
+</services>
