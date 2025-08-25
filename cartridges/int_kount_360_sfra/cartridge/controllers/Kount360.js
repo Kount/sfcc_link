@@ -1,7 +1,7 @@
 'use strict';
 
 var server = require('server');
-var Logger = require('dw/system/Logger').getLogger('Kount360', 'webhooks');
+var Logger = require('dw/system/Logger').getLogger('kount-360', 'webhooks');
 var kountWebhookValidator = require('*/cartridge/scripts/helpers/kountWebhookValidator');
 
 server.post('Webhook', function (req, res, next) {
