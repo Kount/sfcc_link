@@ -1,0 +1,11 @@
+{
+    "name": "eventType",
+    "attributeName": "fieldName", 
+    "transactionID": "kountOrderId",
+    "orderNo": "merchantOrderId",
+    "site": "channel",
+    "oldValue": "oldValue",
+    "newValue": "newValue",
+    "reasonCode": "",
+    "date": "eventDate"
+}

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://www.demandware.com/xml/impex/metadata/2006-10-31">
+    <type-extension type-id="SitePreferences">
+        <custom-attribute-definitions>
+            <attribute-definition attribute-id="kount360APIKey">
+                <display-name xml:lang="x-default">Auth Token API key</display-name>
+                <description xml:lang="x-default">API key extracted from Kount 360 admin panel</description>
+                <type>password</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount360Enabled">
+                <display-name xml:lang="x-default">Enable Payments Fraud</display-name>
+                <description xml:lang="x-default">Enable Payments Fraud Integration</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount360WebhookGracePeriod">
+                <display-name xml:lang="x-default">Webhook Grace Period</display-name>
+                <description xml:lang="x-default">Grace period during which webhooks will be accepted after they are sent from Kount 360</description>
+                <type>double</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>300</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount360WebhookPublicKey">
+                <display-name xml:lang="x-default">Webhook Public API Key</display-name>
+                <description xml:lang="x-default">Webhook public API key used for signature validation between SFCC and Kount 360</description>
+                <type>password</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount360WebhooksEnabled">
+                <display-name xml:lang="x-default">Enable Webhooks</display-name>
+                <description xml:lang="x-default">Enable webhook storage in custom object queue</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+            <attribute-definition attribute-id="kount360useLegacyENSProcessing">
+                <display-name xml:lang="x-default">Enable Legacy ENS Storage</display-name>
+                <description xml:lang="x-default">Enable legacy ENS queue storage. Kount 360 webhook data will be transformed to ENS and processed via the legacy job</description>
+                <type>boolean</type>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+                <default-value>false</default-value>
+            </attribute-definition>
+        </custom-attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="Payments Fraud in Kount 360">
+                <display-name xml:lang="x-default">Payments Fraud in Kount 360 Configurations</display-name>
+                <attribute attribute-id="kount360Enabled"/>
+                <attribute attribute-id="kount360APIKey"/>
+                <attribute attribute-id="kount360WebhooksEnabled"/>
+                <attribute attribute-id="kount360WebhookPublicKey"/>
+                <attribute attribute-id="kount360WebhookGracePeriod"/>
+                <attribute attribute-id="kount360useLegacyENSProcessing"/>
+            </attribute-group>
+        </group-definitions>
+    </type-extension>
+
+    <custom-type type-id="Kount360WebhookQueue">
+        <display-name xml:lang="x-default">Kount 360 Webhook Response</display-name>
+        <staging-mode>no-staging</staging-mode>
+        <storage-scope>site</storage-scope>
+        <key-definition attribute-id="ID">
+            <type>string</type>
+            <min-length>0</min-length>
+        </key-definition>
+        <attribute-definitions>
+            <attribute-definition attribute-id="responseBody">
+                <display-name xml:lang="x-default">Response body</display-name>
+                <type>text</type>
+                <localizable-flag>false</localizable-flag>
+                <mandatory-flag>false</mandatory-flag>
+                <externally-managed-flag>false</externally-managed-flag>
+            </attribute-definition>
+        </attribute-definitions>
+        <group-definitions>
+            <attribute-group group-id="ObjectAttributes">
+                <display-name xml:lang="x-default">Object Attributes</display-name>
+                <attribute attribute-id="ID"/>
+                <attribute attribute-id="creationDate" system="true"/>
+                <attribute attribute-id="lastModified" system="true"/>
+                <attribute attribute-id="responseBody"/>
+            </attribute-group>
+        </group-definitions>
+    </custom-type>
+
+</metadata>

@@ -1,0 +1,8 @@
+{
+  "caches": [
+    {
+      "id": "Kount360",
+      "expireAfterSeconds": 1140
+    }
+  ]
+}

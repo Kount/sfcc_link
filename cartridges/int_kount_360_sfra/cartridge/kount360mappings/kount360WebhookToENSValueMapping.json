@@ -1,0 +1,5 @@
+{
+  "name": { "Order.StatusChange": "WORKFLOW_STATUS_EDIT" },
+  "newValue": { "APPROVE": "A", "DECLINE": "D", "REVIEW": "R", "HOLD": "R" },
+  "oldValue": { "APPROVE": "A", "DECLINE": "D", "REVIEW": "R", "HOLD": "R" }
+}
