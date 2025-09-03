@@ -1,0 +1,1 @@
+Official documentation for the original cartridge installation and the migration to Payments Fraud on Kount 360 is available on the [Kount Developer site](https://developer.kount.com/hc/en-us/sections/40853655948180-Salesforce).
