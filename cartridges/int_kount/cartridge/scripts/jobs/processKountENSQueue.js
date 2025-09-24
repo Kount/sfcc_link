@@ -4,6 +4,8 @@ var Transaction = require('dw/system/Transaction');
 var CustomObjectMgr = require('dw/object/CustomObjectMgr');
 var OrderMgr = require('dw/order/OrderMgr');
 var Logger = require('dw/system/Logger').getLogger('kount', 'kountensqueue');
+var Site = require('dw/system/Site');
+var siteID = Site.current.ID;
 
 /**
  * Processes an ENS Event
@@ -16,14 +18,13 @@ function processENSEvent(EventHub, kount, event) {
     if (eventRunner && event.orderNo) {
         try {
             eventRunner(event);
-        } catch (e) {
-            Logger.error('Cannot process kount ENS event entry. Error: ' + e.message + '\n' + e.stack);
-            kount.writeExecutionError(new Error('KOUNT: ProcessKountENSQueue.js: EventHub: Order with number - ' + event.orderNo + ' failed to update. Stack: ' + e.stack), 'KountEventHub', 'error');
-            try {
-                var order = OrderMgr.getOrder(event.orderNo);
+        } catch (error) {
+            Logger.error('[' + siteID +'] Failed to flag order after failing to update order ' + event.orderNo);
+            kount.writeExecutionError(new Error('[' + siteID +'] KOUNT: ProcessKountENSQueue.js: EventHub: Order with number - ' + event.orderNo + ' failed to update. Stack: ' + error.stack), 'KountEventHub', 'error');
+
+            var order = OrderMgr.getOrder(event.orderNo);
+            if (order) {
                 order.custom.kount_ENSF = true;
-            } catch (err) {
-                Logger.error('Failed to flag order after failing to update order. Error: ' + err.message + '\n' + err.stack);
             }
         }
     }
@@ -61,7 +62,7 @@ function execute() {
                 Transaction.commit();
             } catch (e) {
                 Transaction.rollback();
-                Logger.error('Failed to process ENS Record: ' + e.message + '\n' + e.stack);
+                Logger.error('[' + siteID +'] Failed to process ENS Record: ' + e.message + '\n' + e.stack);
                 break;
             }
         }
