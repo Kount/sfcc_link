@@ -231,14 +231,11 @@ function init(args, preRiskCall) {
 
         if (!empty(paymentToken)) {
             // If we have a payment token, populate the required RIS fields.
+            RequiredInquiryKeysVal.PTOK = paymentToken;
+            RequiredInquiryKeysVal.PTYP = paymentType;
             if (payMethod == "CREDIT_CARD") {
-                RequiredInquiryKeysVal.PTOK = paymentToken;
-                RequiredInquiryKeysVal.PTYP = paymentType;
                 RequiredInquiryKeysVal.PENC = 'KHASH';
                 RequiredInquiryKeysVal.LAST4 = creditCard.Last4 || null;
-            } else {
-                RequiredInquiryKeysVal.PTOK = paymentToken;
-                RequiredInquiryKeysVal.PTYP = paymentType;
             }
         } else { // Set payment to NONE in case token is missing
             RequiredInquiryKeysVal.PTYP = 'NONE';
