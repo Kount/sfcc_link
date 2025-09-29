@@ -121,14 +121,18 @@ function getFulfillment(order) {
                     },
                     emailAddress: order.customerEmail || '',
                     phoneNumber: shippingAddress.phone || ''
-                } : null
+                } : {}
             };
             var addressData = fulfillment.type === 'STORE_PICK_UP' ? {
                 id: shipment.custom.fromStoreId || '',
                 address: address
             } : address;
 
-            fulfillment[fulfillment.type === 'STORE_PICK_UP' ? 'store' : 'address'] = addressData;
+            if (fulfillment.type === 'STORE_PICK_UP') {
+                fulfillment.store = addressData;
+            } else {
+                fulfillment.recipientPerson.address = addressData;
+            }
             fulfillments.push(fulfillment);
         }
     } catch (e) {
