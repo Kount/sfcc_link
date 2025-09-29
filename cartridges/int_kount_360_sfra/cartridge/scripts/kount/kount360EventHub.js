@@ -16,10 +16,10 @@ var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
  */
 function updateOrderStatus(orderStatus, order) {
     Transaction.wrap(function () {
-        if (orderStatus === 'APPROVED') {
+        if (orderStatus === 'APPROVE') {
             order.setExportStatus(Order.EXPORT_STATUS_READY);
             order.setConfirmationStatus(Order.CONFIRMATION_STATUS_CONFIRMED);
-        } else if (orderStatus === 'DECLINED') {
+        } else if (orderStatus === 'DECLINE') {
             order.setExportStatus(Order.EXPORT_STATUS_NOTEXPORTED);
             order.setConfirmationStatus(Order.CONFIRMATION_STATUS_NOTCONFIRMED);
         } else if (orderStatus === 'REVIEW') {
