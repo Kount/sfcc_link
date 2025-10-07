@@ -1,3 +1,5 @@
 {
-  "SHTP": { "ST": "STANDARD", "2D": "EXPRESS" , "ND": "NEXT_DAY" , "PU": "STANDARD", "DE": "STANDARD"}
+  "SHTP": { "ST": "STANDARD", "2D": "EXPRESS" , "ND": "NEXT_DAY" , "PU": "STANDARD", "DE": "STANDARD"},
+  "AUTH": {"A": "Approved", "D": "Declined", "U": "Unknown", "F": "Error"},
+  "CVVR": {"M": "Match", "N": "NoMatch", "X": "Match"}
 }

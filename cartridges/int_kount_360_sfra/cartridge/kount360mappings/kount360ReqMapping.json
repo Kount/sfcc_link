@@ -36,8 +36,7 @@
     "transactions.[*].billedPerson.address.region": "B2ST",
     "transactions.[*].billedPerson.address.postalCode": "B2PC",
     "transactions.[*].billedPerson.address.countryCode": "B2CC",
-    "transactions.[*].billedPerson.authorizationStatus.authResult": "AUTH",
-    "transactions.[*].billedPerson.authorizationStatus.verificationResponse.addressStatus": "AVST",
-    "transactions.[*].billedPerson.authorizationStatus.verificationResponse.postalCodeStatus": "AVSZ",
-    "transactions.[*].billedPerson.authorizationStatus.verificationResponse.cvvStatus": "CVVR"
+    "transactions.[*].authorizationStatus.authResult": "AUTH",
+    "transactions.[*].authorizationStatus.verificationResponse.avsStatus": "AVST",
+    "transactions.[*].authorizationStatus.verificationResponse.cvvStatus": "CVVR"
   }
