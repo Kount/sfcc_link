@@ -159,8 +159,8 @@ function getKountTransactions(order) {
                 transactions.push({
                     merchantTransactionId: transaction.transactionID || '',
                     processor: transaction.paymentProcessor ? transaction.paymentProcessor.ID : '',
-                    subtotal: order.adjustedMerchandizeTotalNetPrice && order.adjustedMerchandizeTotalNetPrice.available ? order.adjustedMerchandizeTotalNetPrice.multiply(100).value : null,
-                    orderTotal: order.adjustedMerchandizeTotalPrice && order.adjustedMerchandizeTotalPrice.available ? order.adjustedMerchandizeTotalPrice.multiply(100).value : null,
+                    subtotal: order.adjustedMerchandizeTotalPrice && order.adjustedMerchandizeTotalPrice.available ? order.adjustedMerchandizeTotalPrice.multiply(100).value : null,
+                    orderTotal: order.totalGrossPrice && order.totalGrossPrice.available ? order.totalGrossPrice.multiply(100).value : null,
                     currency: order.currencyCode || '',
                     tax: {
                         isTaxable: order.totalTax && order.totalTax.available ? order.totalTax.value > 0 : false,
