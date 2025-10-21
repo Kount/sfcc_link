@@ -28,7 +28,7 @@ function getCachedToken() {
     if (
       currentToken &&
       currentToken.token &&
-      currentToken.expiresAt - 60 > today.getTime()
+      (currentToken.expiresAt - 60000) > today.getTime()
     ) {
         return currentToken.token;
     }

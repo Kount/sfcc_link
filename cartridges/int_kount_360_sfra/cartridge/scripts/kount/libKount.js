@@ -11,6 +11,22 @@ var basePostRISRequest = base.postRISRequest;
 var basePostRiskCall = base.postRiskCall;
 
 /**
+ * @description Maps UDF fields to Kount 360 format
+ * @param {dw.order.Order} order Order
+ * @returns {Object} Object with UDF fields mapped to Kount 360 format
+ */
+function mapKount360UDFFields(order) {
+    var baseUDFFields = base.getUDFFields(order);
+    var kount360UDFFields = {customFields: {}};
+
+    for (var i = 0; i < baseUDFFields.length; i++) {
+        kount360UDFFields.customFields[baseUDFFields[i].label] = baseUDFFields[i].value;
+    }
+
+    return kount360UDFFields;
+}
+
+/**
  * @description Makes POST request. Sends orders details for evaluating
  * @param {Object} RequiredInquiryKeysVal Payload to send to Kount risk service
  * @returns {Object} Object parsed response or empty object (if an error occurred)
@@ -40,8 +56,10 @@ function postRISRequest(RequiredInquiryKeysVal) {
         var inquirySource = mappingUtils.applyCustomMapping(RequiredInquiryKeysVal, kount360Mappings.kount360ReqValueMapping);
         var requestBody = mappingUtils.transform(kount360Mappings.kount360ReqMapping, inquirySource);
         var extendedOrderModel = orderModel.error || RequiredInquiryKeysVal.MODE === 'U' ? requestBody : kountUtils.extend(requestBody, orderModel);
+        var kount360UDFFields = mapKount360UDFFields(order);
+        var finalRequestBody = kountUtils.extend(extendedOrderModel, kount360UDFFields);
         var response = kount360APIService.call({
-            requestBody: extendedOrderModel,
+            requestBody: finalRequestBody,
             params: {
                 riskInquiry: RequiredInquiryKeysVal.MODE !== 'U' ? 'true' : 'false'
             },

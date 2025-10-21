@@ -2,7 +2,7 @@
   "caches": [
     {
       "id": "Kount360",
-      "expireAfterSeconds": 1140
+      "expireAfterSeconds": 900
     }
   ]
 }
