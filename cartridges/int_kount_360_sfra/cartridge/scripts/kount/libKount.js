@@ -92,9 +92,11 @@ function postRISRequest(RequiredInquiryKeysVal) {
  * @returns {Object} result of risk call
  */
 function postRiskCall(paymentCallback, order, isSfra) {
+    var currentSite = Site.getCurrent();
+    var kount360Enabled = currentSite.getCustomPreferenceValue('kount360Enabled');
     var result = basePostRiskCall ? basePostRiskCall.call(this, paymentCallback, order, isSfra) : null;
     // Send failed orders due to payment to Kount 360
-    if (result && result.error && !result.KountOrderStatus) {
+    if (kount360Enabled && result && result.error && !result.KountOrderStatus) {
         var kountOrderModel = require('*/cartridge/scripts/helpers/kount360OrderModel');
         var requestBody = kountOrderModel.buildkount360OrderRequest(order);
         if (!requestBody.error) {
