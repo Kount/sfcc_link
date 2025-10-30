@@ -23,7 +23,7 @@
   "RULE_ID_X": "order.riskInquiry.segmentExecuted.policiesExecuted.id",
   "RULE_DESCRIPTION_X": "order.riskInquiry.segmentExecuted.policiesExecuted.name",
   "CARDS": "order.riskInquiry.persona.uniqueCards",
-  "VMAX": "order.riskInquiry.persona.maxVelocity",
+  "VELO": "order.riskInquiry.persona.maxVelocity",
   "GEOX": "order.riskInquiry.persona.riskiestCountry",
   "REPLY": "order.riskInquiry.policyManagement.decision",
   "REASON_CODE": "order.riskInquiry.reasonCode"
