@@ -5,7 +5,7 @@
   "SITE": "order.channel",
   "SESS": "order.deviceSessionId",
   "AUTO": "order.riskInquiry.decision",
-  "OMNISCORE": "order.riskInquiry.omniscore",
+  "SCOR": "order.riskInquiry.omniscore",
   "DEVICES": "order.riskInquiry.persona.uniqueDevices",
   "EMAILS": "order.riskInquiry.persona.uniqueEmails",
   "FINGERPRINT": "order.riskInquiry.device.id",
@@ -21,5 +21,10 @@
   "REGION": "order.riskInquiry.device.location.region",
   "RULES_TRIGGERED": "order.riskInquiry.segmentExecuted.policiesExecuted",
   "RULE_ID_X": "order.riskInquiry.segmentExecuted.policiesExecuted.id",
-  "RULE_DESCRIPTION_X": "order.riskInquiry.segmentExecuted.policiesExecuted.name"
+  "RULE_DESCRIPTION_X": "order.riskInquiry.segmentExecuted.policiesExecuted.name",
+  "CARDS": "order.riskInquiry.persona.uniqueCards",
+  "VELO": "order.riskInquiry.persona.maxVelocity",
+  "GEOX": "order.riskInquiry.persona.riskiestCountry",
+  "REPLY": "order.riskInquiry.policyManagement.decision",
+  "REASON_CODE": "order.riskInquiry.reasonCode"
 }
