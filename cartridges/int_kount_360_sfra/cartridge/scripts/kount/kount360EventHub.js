@@ -15,6 +15,11 @@ var COHelpers = require('*/cartridge/scripts/checkout/checkoutHelpers');
  * @param {dw.order.Order} order SFCC Order object
  */
 function updateOrderStatus(orderStatus, order) {
+    var kountOrderStatusMap = {
+        'APPROVE': 'APPROVED',
+        'DECLINE': 'DECLINED',
+        'REVIEW': 'HOLD'
+    };
     Transaction.wrap(function () {
         if (orderStatus === 'APPROVE') {
             order.setExportStatus(Order.EXPORT_STATUS_READY);
@@ -25,6 +30,9 @@ function updateOrderStatus(orderStatus, order) {
         } else if (orderStatus === 'REVIEW') {
             order.setExportStatus(Order.EXPORT_STATUS_READY);
             order.setConfirmationStatus(Order.CONFIRMATION_STATUS_NOTCONFIRMED);
+        }
+        if (orderStatus && kountOrderStatusMap[orderStatus]) {
+            order.custom.kount_Status = kountOrderStatusMap[orderStatus];
         }
     });
 }
