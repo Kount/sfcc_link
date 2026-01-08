@@ -71,19 +71,34 @@ function getNestedValue(obj, path) {
 function transform(mapping, source, sourceToTarget, stringifyValue) {
     var result = {};
     var arrayGroups = {};
+    var keysToFlatten = {}; // Track which keys should be flattened
 
     Object.keys(mapping).forEach(function (key) {
         if (!Object.hasOwnProperty.call(mapping, key)) { return; }
         var from = sourceToTarget ? key : mapping[key];
         var to = sourceToTarget ? mapping[key] : key;
-        var match = to.match(/^(.*?)\.\[\*\]\.(.+)$/);
-        if (match) {
-            var base = match[1];
-            if (!arrayGroups[base]) arrayGroups[base] = [];
-            arrayGroups[base].push({
-                targetSubPath: match[2],
-                sourcePath: from
+        
+        // Check for [*] in source path (from) for response mapping
+        var sourceMatch = from.match(/^(.*?)\.\[\*\]\.(.+)$/);
+        if (sourceMatch && !sourceToTarget) {
+            // For response mapping: source has [*], target is the base key
+            if (!arrayGroups[to]) arrayGroups[to] = [];
+            arrayGroups[to].push({
+                targetSubPath: sourceMatch[2],
+                sourcePath: sourceMatch[1]
             });
+            keysToFlatten[to] = true; // Mark this key for flattening
+        } else {
+            // Original logic for request mapping: target has [*]
+            var match = to.match(/^(.*?)\.\[\*\]\.(.+)$/);
+            if (match) {
+                var base = match[1];
+                if (!arrayGroups[base]) arrayGroups[base] = [];
+                arrayGroups[base].push({
+                    targetSubPath: match[2],
+                    sourcePath: from
+                });
+            }
         }
     });
 
@@ -97,10 +112,22 @@ function transform(mapping, source, sourceToTarget, stringifyValue) {
         var subPath = group.targetSubPath;
         var sourcePath = group.sourcePath;
         var sourceVal = getNestedValue(source, sourcePath);
-        var value = Array.isArray(sourceVal) ? sourceVal[arrIdx] : sourceVal;
-        if (typeof value !== 'undefined') {
-            var finalPath = key + '.' + arrIdx + '.' + subPath;
-            setNestedValue(result, finalPath, value);
+        
+        // For response mapping, sourceVal is the array, get element and extract subPath
+        if (Array.isArray(sourceVal)) {
+            var arrayElement = sourceVal[arrIdx];
+            var value = subPath ? getNestedValue(arrayElement, subPath) : arrayElement;
+            if (typeof value !== 'undefined') {
+                var finalPath = key + '.' + arrIdx;
+                setNestedValue(result, finalPath, stringifyValue ? String(value) : value);
+            }
+        } else {
+            // Original logic for request mapping
+            var value = Array.isArray(sourceVal) ? sourceVal[arrIdx] : sourceVal;
+            if (typeof value !== 'undefined') {
+                var finalPath = key + '.' + arrIdx + '.' + subPath;
+                setNestedValue(result, finalPath, value);
+            }
         }
     }
 
@@ -140,6 +167,53 @@ function transform(mapping, source, sourceToTarget, stringifyValue) {
         }
     });
 
+    return flattenArrayNotation(result, keysToFlatten);
+}
+
+/**
+ * Flattens nested array structures created by [*] notation.
+ * Converts { "RULE_ID": { "0": "value1", "1": "value2" } } or { "RULE_ID": ["value1", "value2"] }
+ * to { "RULE_ID_0": "value1", "RULE_ID_1": "value2" }
+ *
+ * @param {Object} obj - The object to flatten.
+ * @param {Object} keysToFlatten - Object with keys that should be flattened (optional).
+ * @returns {Object} The flattened object.
+ */
+function flattenArrayNotation(obj, keysToFlatten) {
+    var result = {};
+    
+    Object.keys(obj).forEach(function (key) {
+        var value = obj[key];
+        
+        // Only flatten if this key is marked for flattening or no filter is provided
+        var shouldFlatten = !keysToFlatten || keysToFlatten[key];
+        
+        // Check if value is an array
+        if (shouldFlatten && Array.isArray(value)) {
+            // Flatten: RULE_ID[0] -> RULE_ID_0
+            value.forEach(function (item, index) {
+                result[key + '_' + index] = item;
+            });
+        } else if (shouldFlatten && value && typeof value === 'object') {
+            // Check if value is an object with numeric keys (array-like structure)
+            var keys = Object.keys(value);
+            var isArrayLike = keys.length > 0 && keys.every(function (k) {
+                return /^\d+$/.test(k);
+            });
+            
+            if (isArrayLike) {
+                // Flatten: RULE_ID.0 -> RULE_ID_0
+                keys.forEach(function (index) {
+                    result[key + '_' + index] = value[index];
+                });
+            } else {
+                result[key] = value;
+            }
+        } else {
+            result[key] = value;
+        }
+    });
+    
     return result;
 }
 
