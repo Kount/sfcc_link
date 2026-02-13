@@ -4,7 +4,6 @@
     "deviceSessionId": "SESS",
     "userIp": "IPAD",
     "account.id": "UNIQ",
-    "account.creationDate": "EPOC",
     "account.type": "SITE",
     "items.[*].price": "PROD_PRICE",
     "items.[*].description": "PROD_DESC",
