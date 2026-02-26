@@ -38,7 +38,7 @@ function getKountItems(order) {
             if (pli) {
                 items.push({
                     upc: pli.product && pli.product.UPC ? pli.product.UPC : '',
-                    price: pli.adjustedPrice ? pli.adjustedPrice.multiply(100).value : null,
+                    price: pli.getPrice() ? pli.getPrice().divide(pli.quantityValue).multiply(100).value : null,
                     name: pli.productName || '',
                     quantity: pli.quantityValue || 1,
                     description: pli.lineItemText || '',
@@ -142,6 +142,27 @@ function getFulfillment(order) {
 }
 
 /**
+ * Get Kount 360 Order card bin
+ * @param {dw.order.Order} order - Requested order
+ * @param {dw.order.PaymentInstrument} pi - Requested payment instrument
+ * @returns {String} - card bin
+ */
+function getCardBin(order, pi) {
+    if (!pi || pi.paymentMethod !== 'CREDIT_CARD') {
+        return '';
+    }
+
+    if (order && order.custom.kount_KHash) {
+        return order.custom.kount_KHash.substring(0, 6);
+    }
+
+    var sessionCardNumber = session && session.forms && session.forms.billing && session.forms.billing.creditCardFields && session.forms.billing.creditCardFields.cardNumber &&
+        session.forms.billing.creditCardFields.cardNumber.value ? session.forms.billing.creditCardFields.cardNumber.value : null;
+    
+    return sessionCardNumber ? sessionCardNumber.substring(0, 6) : '';
+}
+
+/**
  * Get Kount 360 Order transactions
  * @param {dw.order.Order} order - Requested order
  * @returns {Array} - transactions
@@ -191,6 +212,9 @@ function getKountTransactions(order) {
                         authResult: order.status.value !== Order.ORDER_STATUS_FAILED ? 'Approved' : 'Declined',
                         dateTime: order.creationDate ? order.creationDate.toISOString() : null,
                         processorTransactionId: transaction.transactionID || ''
+                    },
+                    payment: {
+                        bin: getCardBin(order, pi)
                     }
                 });
             }
