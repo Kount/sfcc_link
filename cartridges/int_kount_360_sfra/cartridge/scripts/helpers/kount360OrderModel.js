@@ -38,7 +38,7 @@ function getKountItems(order) {
             if (pli) {
                 items.push({
                     upc: pli.product && pli.product.UPC ? pli.product.UPC : '',
-                    price: pli.adjustedPrice ? pli.adjustedPrice.multiply(100).value : null,
+                    price: pli.getPrice() ? pli.getPrice().divide(pli.quantityValue).multiply(100).value : null,
                     name: pli.productName || '',
                     quantity: pli.quantityValue || 1,
                     description: pli.lineItemText || '',
