@@ -8,7 +8,7 @@
     </service-credential>
 
     <service-credential service-credential-id="kount360.auth.credentials">
-        <url>https://login.kount.com/oauth2/ausdppkujzCPQuIrY357/v1/token</url>
+        <url>https://login-uat.equifax.com/ausdppkujzCPQuIrY357/token</url>
         <user-id/>
         <password encrypted="true" encryption-type="common.export">y52mqGQvW+BNHaFJ4iGs02fz1DZM1Xk1zh7cIqMEUuw=</password>
     </service-credential>
