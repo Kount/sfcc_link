@@ -227,12 +227,16 @@ function getKountTransactions(order) {
 
 /**
  * Builds kount360 Order api request using SFCC order data
- * @param {dw.order.order} order - Requested order
+ * @param {dw.order.Order} order - Requested order
  * @returns {Object} requestData - Requested data object
  */
 function buildkount360OrderRequest(order) {
-    var Site = require('dw/system/Site');
-    var currentSite = Site.getCurrent();
+    var kount = require('*/cartridge/scripts/kount/libKount');
+    var channel = kount.getWebsiteID();
+    if (!channel) {
+        var Site = require('dw/system/Site');
+        channel = Site.getCurrent().ID.toUpperCase();
+    }
     var requestData = {};
     try {
         if (!order) {
@@ -240,7 +244,7 @@ function buildkount360OrderRequest(order) {
         }
         // Top-level fields
         requestData.merchantOrderId = order.orderNo || '';
-        requestData.channel = currentSite && currentSite.ID.toUpperCase();
+        requestData.channel = channel;
         // eslint-disable-next-line no-undef
         requestData.deviceSessionId = session.privacy.sessId || '';
         requestData.creationDateTime = order.creationDate ? order.creationDate.toISOString() : null;
