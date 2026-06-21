@@ -18,10 +18,19 @@ function validateTimestamp(timestampHeader) {
 
     try {
         var eventTime = new Date(timestampHeader).getTime();
-        var currentTime = new Date().getTime();
-        var timeDifference = Math.abs(currentTime - eventTime) / 1000;
-
-        return timeDifference <= gracePeriod;
+        if (eventTime) {
+            var currentTime = new Date().getTime();
+            var timeDifference = Math.abs(currentTime - eventTime) / 1000;
+            return timeDifference <= gracePeriod;
+        } else {
+            // Handle case for old SFCC Compatibility Mode instances where Date parsing fails
+            var Calendar = require('dw/util/Calendar');
+            var dateOffset = Date.now() - gracePeriod * 1000;
+            var offsetCalendar = new Calendar(new Date(dateOffset));
+            var eventCalendar = new Calendar();
+            eventCalendar.parseByFormat(timestampHeader, "yyyy-MM-dd'T'HH:mm:ss'Z'");
+            return eventCalendar.compareTo(offsetCalendar) >= 0;
+        }
     } catch (e) {
         return false;
     }
